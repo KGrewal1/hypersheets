@@ -19,14 +19,13 @@ def expected_return(returns, aggregate=None, compounded=True,
     """
     Returns the expected geometric return for a given period
     by calculating the geometric holding period return
-    $$ \left(\prod\limits_{i=1}^{n}(p_{i})\right)^(1/n)$$
     """
     # if prepare_returns:
     #     returns = utils.prepare_returns(returns)
     # returns = utils.aggregate_returns(returns, aggregate, compounded)
     return np.product(1 + returns) ** (1 / len(returns)) - 1
 
-# %% ../nbs/01_stats.ipynb 11
+# %% ../nbs/01_stats.ipynb 12
 def geometric_mean(retruns, aggregate=None, compounded=True):
     """Shorthand for expected_return()"""
     return expected_return(retruns, aggregate, compounded)
@@ -36,5 +35,5 @@ def ghpr(retruns, aggregate=None, compounded=True):
     """Shorthand for expected_return()"""
     return expected_return(retruns, aggregate, compounded)
 
-# %% ../nbs/01_stats.ipynb 12
+# %% ../nbs/01_stats.ipynb 13
 def foo(): pass

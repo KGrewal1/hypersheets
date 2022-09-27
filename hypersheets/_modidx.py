@@ -11,4 +11,6 @@ d = { 'settings': { 'branch': 'main',
                                    'hypersheets.stats.expected_return': ('stats.html#expected_return', 'hypersheets/stats.py'),
                                    'hypersheets.stats.foo': ('stats.html#foo', 'hypersheets/stats.py'),
                                    'hypersheets.stats.geometric_mean': ('stats.html#geometric_mean', 'hypersheets/stats.py'),
-                                   'hypersheets.stats.ghpr': ('stats.html#ghpr', 'hypersheets/stats.py')}}}
+                                   'hypersheets.stats.ghpr': ('stats.html#ghpr', 'hypersheets/stats.py')},
+            'hypersheets.utils': { 'hypersheets.utils.mtd': ('utils.html#mtd', 'hypersheets/utils.py'),
+                                   'hypersheets.utils.qtd': ('utils.html#qtd', 'hypersheets/utils.py')}}}
