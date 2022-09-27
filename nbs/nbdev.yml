@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "hypersheets"
+  site-url: "https://KGrewal1.github.io/hypersheets"
+  description: "hypersheets"
+  repo-branch: main
+  repo-url: "https://github.com/KGrewal1/hypersheets"
