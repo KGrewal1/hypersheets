@@ -6,7 +6,7 @@ hypersheets
 This file will become your README and also the index of your
 documentation.
 
-\#About
+# About
 
 This is a python package, made in nbdev for creating financial
 tearsheets based on Ran Aroussi’s quanstats
