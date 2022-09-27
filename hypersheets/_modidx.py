@@ -5,4 +5,6 @@ d = { 'settings': { 'branch': 'main',
                 'doc_host': 'https://KGrewal1.github.io',
                 'git_url': 'https://github.com/KGrewal1/hypersheets',
                 'lib_path': 'hypersheets'},
-  'syms': {'hypersheets.core': {'hypersheets.core.foo': ('core.html#foo', 'hypersheets/core.py')}}}
+  'syms': { 'hypersheets.core': {'hypersheets.core.foo': ('core.html#foo', 'hypersheets/core.py')},
+            'hypersheets.stats': { 'hypersheets.stats.compsum': ('stats.html#compsum', 'hypersheets/stats.py'),
+                                   'hypersheets.stats.foo': ('stats.html#foo', 'hypersheets/stats.py')}}}
