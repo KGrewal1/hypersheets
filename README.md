@@ -9,7 +9,7 @@ documentation.
 # About
 
 This is a python package, made in nbdev for creating financial
-tearsheets based on Ran Aroussi’s quanstats
+tearsheets based on Ran Aroussi’s quanstats.
 
 ## Install
 
