@@ -3,8 +3,8 @@
 # %% auto 0
 __all__ = ['mtd', 'qtd', 'ytd', 'pandas_date', 'pandas_current_month', 'multi_shift', 'to_returns', 'to_prices', 'log_returns',
            'to_log_returns', 'exponential_stdev', 'rebase', 'group_returns', 'aggregate_returns', 'to_excess_returns',
-           'prepare_prices', 'prepare_returns', 'download_returns', 'prepare_benchmark', 'round_to_closest',
-           'file_stream', 'make_index', 'make_portfolio']
+           'prepare_prices', 'prepare_returns', 'download_prices', 'download_returns', 'prepare_benchmark',
+           'round_to_closest', 'file_stream', 'make_index', 'make_portfolio']
 
 # %% ../nbs/00_utils.ipynb 2
 #| echo: false
@@ -20,19 +20,19 @@ import hypersheets.stats as stats
 # %% ../nbs/00_utils.ipynb 3
 def mtd(df):
     """Restrict a dataframe to only month to date"""
-    return df[df.index >= _dt.datetime.now(
+    return df[df.index >= dt.datetime.now(
     ).strftime('%Y-%m-01')]
 
 # %% ../nbs/00_utils.ipynb 4
 def qtd(df):
     """Restrict a dataframe to only quarter to date (quarters starting in Jan, Apr, Jun, Oct) """
-    return df[df.index >= _dt.datetime.now(
+    return df[df.index >= dt.datetime.now(
     ).strftime('%Y-%m-01')]
 
 # %% ../nbs/00_utils.ipynb 5
 def ytd(df):
     """Restrict a dataframe to only year to date"""
-    return df[df.index >= _dt.datetime.now(
+    return df[df.index >= dt.datetime.now(
     ).strftime('%Y-01-01')]
 
 # %% ../nbs/00_utils.ipynb 7
@@ -45,8 +45,8 @@ def pandas_date(df, dates):
 # %% ../nbs/00_utils.ipynb 9
 def pandas_current_month(df):
     """an alternative method to mtd. remove?"""
-    n = _dt.datetime.now()
-    daterange = _pd.date_range(_dt.date(n.year, n.month, 1), n)
+    n = dt.datetime.now()
+    daterange = pd.date_range(dt.date(n.year, n.month, 1), n)
     return df[df.index.isin(daterange)]
 
 # %% ../nbs/00_utils.ipynb 10
@@ -169,7 +169,7 @@ def to_excess_returns(returns:('~pd.Series', '~pd.DataFrame'), # Returns
 
     if nperiods is not None:
         # deannualize
-        rf = _np.power(1 + rf, 1. / nperiods) - 1.
+        rf = np.power(1 + rf, 1. / nperiods) - 1.
 
     return returns - rf
 
@@ -177,7 +177,7 @@ def to_excess_returns(returns:('~pd.Series', '~pd.DataFrame'), # Returns
 def prepare_prices(data, base=1.):
     """Converts return data into prices + cleanup"""
     data = data.copy()
-    if isinstance(data, _pd.DataFrame):
+    if isinstance(data, pd.DataFrame):
         for col in data.columns:
             if data[col].dropna().min() <= 0 or data[col].dropna().max() < 1:
                 data[col] = to_prices(data[col], base)
@@ -187,9 +187,9 @@ def prepare_prices(data, base=1.):
     elif data.min() < 0 or data.max() < 1:
         data = to_prices(data, base)
 
-    if isinstance(data, (_pd.DataFrame, _pd.Series)):
+    if isinstance(data, (pd.DataFrame, pd.Series)):
         data = data.fillna(0).replace(
-            [_np.inf, -_np.inf], float('NaN'))
+            [np.inf, -np.inf], float('NaN'))
 
     return data
 
@@ -198,7 +198,7 @@ def prepare_returns(data, rf=0., nperiods=None):
     """Converts price data into returns + cleanup"""
     data = data.copy()
     function = inspect.stack()[1][3]
-    if isinstance(data, _pd.DataFrame):
+    if isinstance(data, pd.DataFrame):
         for col in data.columns:
             if data[col].dropna().min() >= 0 and data[col].dropna().max() > 1:
                 data[col] = data[col].pct_change()
@@ -206,15 +206,15 @@ def prepare_returns(data, rf=0., nperiods=None):
         data = data.pct_change()
 
     # cleanup data
-    data = data.replace([_np.inf, -_np.inf], float('NaN'))
+    data = data.replace([np.inf, -np.inf], float('NaN'))
 
-    if isinstance(data, (_pd.DataFrame, _pd.Series)):
+    if isinstance(data, (pd.DataFrame, pd.Series)):
         data = data.fillna(0).replace(
-            [_np.inf, -_np.inf], float('NaN'))
+            [np.inf, -np.inf], float('NaN'))
     unnecessary_function_calls = ['_prepare_benchmark',
                                   'cagr',
                                   'gain_to_pain_ratio',
-                                  'rolling_volatility',]
+                                  'rolling_volatility']
 
 
     if function not in unnecessary_function_calls:
@@ -223,21 +223,32 @@ def prepare_returns(data, rf=0., nperiods=None):
     return data
 
 # %% ../nbs/00_utils.ipynb 25
-def download_returns(ticker, period="max"):
-    """download returns from yahoo"""
-    if isinstance(period, _pd.DatetimeIndex):
+def download_prices(ticker, period="max"):
+    """download daily adjusted close prices from yahoo"""
+    if isinstance(period, pd.DatetimeIndex):
         p = {"start": period[0]}
     else:
         p = {"period": period}
-    return _yf.Ticker(ticker).history(**p)['Close'].pct_change() # may need to change Adj Close
 
-# %% ../nbs/00_utils.ipynb 26
+    return yf.Ticker(ticker).history(**p)['Close']# this is automatically the adjusted value
+
+# %% ../nbs/00_utils.ipynb 27
+def download_returns(ticker, period="max"):
+    """download returns from yahoo"""
+    if isinstance(period, pd.DatetimeIndex):
+        p = {"start": period[0]}
+    else:
+        p = {"period": period}
+
+    return yf.Ticker(ticker).history(**p)['Close'].pct_change() # this is automatically the adjusted value
+
+# %% ../nbs/00_utils.ipynb 29
 def prepare_benchmark(benchmark=None, period="max", rf=0.,
                        prepare_returns=True):
     """
     Fetch benchmark if ticker is provided, and pass through
     _prepare_returns()
-    period can be options or (expected) _pd.DatetimeIndex range
+    period can be options or (expected) pd.DatetimeIndex range
     """
     if benchmark is None:
         return None
@@ -245,15 +256,15 @@ def prepare_benchmark(benchmark=None, period="max", rf=0.,
     if isinstance(benchmark, str):
         benchmark = download_returns(benchmark)
 
-    elif isinstance(benchmark, _pd.DataFrame):
+    elif isinstance(benchmark, pd.DataFrame):
         benchmark = benchmark[benchmark.columns[0]].copy()
 
-    if isinstance(period, _pd.DatetimeIndex) \
+    if isinstance(period, pd.DatetimeIndex) \
         and set(period) != set(benchmark.index):
 
         # Adjust Benchmark to Strategy frequency
         benchmark_prices = to_prices(benchmark, base=1)
-        new_index = _pd.date_range(start=period[0], end=period[-1], freq='D')
+        new_index = pd.date_range(start=period[0], end=period[-1], freq='D')
         benchmark = benchmark_prices.reindex(new_index, method='bfill') \
             .reindex(period).pct_change().fillna(0)
         benchmark = benchmark[benchmark.index.isin(period)]
@@ -262,19 +273,19 @@ def prepare_benchmark(benchmark=None, period="max", rf=0.,
         return _prepare_returns(benchmark.dropna(), rf=rf)
     return benchmark.dropna()
 
-# %% ../nbs/00_utils.ipynb 27
+# %% ../nbs/00_utils.ipynb 30
 def round_to_closest(val, res, decimals=None):
     """Round to closest resolution"""
     if decimals is None and "." in str(res):
         decimals = len(str(res).split('.')[1])
     return round(round(val / res) * res, decimals)
 
-# %% ../nbs/00_utils.ipynb 28
+# %% ../nbs/00_utils.ipynb 31
 def file_stream():
     """Returns a file stream"""
     return io.BytesIO()
 
-# %% ../nbs/00_utils.ipynb 29
+# %% ../nbs/00_utils.ipynb 32
 def _in_notebook(matplotlib_inline=False):
     """Identify enviroment (notebook, terminal, etc)"""
     try:
@@ -293,25 +304,25 @@ def _in_notebook(matplotlib_inline=False):
         # Probably standard Python interpreter
         return False
 
-# %% ../nbs/00_utils.ipynb 30
+# %% ../nbs/00_utils.ipynb 33
 def _count_consecutive(data):
     """Counts consecutive data (like cumsum() with reset on zeroes)"""
     def _count(data):
         return data * (data.groupby(
             (data != data.shift(1)).cumsum()).cumcount() + 1)
 
-    if isinstance(data, _pd.DataFrame):
+    if isinstance(data, pd.DataFrame):
         for col in data.columns:
             data[col] = _count(data[col])
         return data
     return _count(data)
 
-# %% ../nbs/00_utils.ipynb 31
+# %% ../nbs/00_utils.ipynb 34
 def _score_str(val):
     """Returns + sign for positive values and - for negative values (used in plots)"""
     return ("" if "-" in val else "+") + str(val)
 
-# %% ../nbs/00_utils.ipynb 32
+# %% ../nbs/00_utils.ipynb 35
 def make_index(ticker_weights:(dict), #  A python dict with tickers as keys and weights as values
 rebalance="1M", # Pandas resample interval or None for never
 period:(str)="max", # time period of the returns to be downloaded
@@ -338,7 +349,7 @@ match_dates:(bool)=False # whether to match dates?
         portfolio[ticker] = ticker_returns
 
     # index members time-series
-    index = _pd.DataFrame(portfolio).dropna()
+    index = pd.DataFrame(portfolio).dropna()
 
     if match_dates:
         index=index[max(index.ne(0).idxmax()):]
@@ -356,15 +367,15 @@ match_dates:(bool)=False # whether to match dates?
     rbdf['break'] = rbdf.index.strftime('%s')
 
     # index returns with rebalance markers
-    index = _pd.concat([index, rbdf['break']], axis=1)
+    index = pd.concat([index, rbdf['break']], axis=1)
 
     # mark first day day
-    index['first_day'] = _pd.isna(index['break']) & ~_pd.isna(index['break'].shift(1))
+    index['first_day'] = pd.isna(index['break']) & ~pd.isna(index['break'].shift(1))
     index.loc[index.index[0], 'first_day'] = True
 
     # multiply first day of each rebalance period by the weight
     for ticker, weight in ticker_weights.items():
-        index[ticker] = _np.where(
+        index[ticker] = np.where(
             index['first_day'], weight * index[ticker], index[ticker])
 
     # drop first marker
@@ -375,7 +386,7 @@ match_dates:(bool)=False # whether to match dates?
     return index[index.index <= last_day].sum(axis=1)
 
 
-# %% ../nbs/00_utils.ipynb 33
+# %% ../nbs/00_utils.ipynb 36
 def make_portfolio(returns, start_balance=1e5,
                    mode="comp", round_to=None):
     """Calculates compounded value of portfolio"""
@@ -392,24 +403,24 @@ def make_portfolio(returns, start_balance=1e5,
         p1 = start_balance + comp_rev.cumsum()
 
     # add day before with starting balance
-    p0 = _pd.Series(data=start_balance,
-                    index=p1.index + _pd.Timedelta(days=-1))[:1]
+    p0 = pd.Series(data=start_balance,
+                    index=p1.index + pd.Timedelta(days=-1))[:1]
 
-    portfolio = _pd.concat([p0, p1])
+    portfolio = pd.concat([p0, p1])
 
-    if isinstance(returns, _pd.DataFrame):
+    if isinstance(returns, pd.DataFrame):
         portfolio.loc[:1, :] = start_balance
         portfolio.drop(columns=[0], inplace=True)
 
     if round_to:
-        portfolio = _np.round(portfolio, round_to)
+        portfolio = np.round(portfolio, round_to)
 
     return portfolio
 
-# %% ../nbs/00_utils.ipynb 34
+# %% ../nbs/00_utils.ipynb 37
 def _flatten_dataframe(df, set_index=None):
     """Dirty method for flattening multi-index dataframe"""
-    s_buf = _io.StringIO()
+    s_buf = io.StringIO()
     df.to_csv(s_buf)
     s_buf.seek(0)
 
@@ -419,6 +430,6 @@ def _flatten_dataframe(df, set_index=None):
 
     return 
 
-# %% ../nbs/00_utils.ipynb 35
+# %% ../nbs/00_utils.ipynb 38
 #| export 
 
