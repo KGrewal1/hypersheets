@@ -3,7 +3,8 @@
 # %% auto 0
 __all__ = ['df', 'mtd', 'qtd', 'ytd', 'pandas_date', 'pandas_current_month', 'multi_shift', 'to_returns', 'to_prices',
            'log_returns', 'to_log_returns', 'exponential_stdev', 'rebase', 'group_returns', 'aggregate_returns',
-           'to_excess_returns', 'download_returns', 'make_index', 'make_portfolio']
+           'to_excess_returns', 'prepare_prices', 'prepare_returns', 'download_returns', 'prepare_benchmark',
+           'round_to_closest', 'file_stream', 'make_index', 'make_portfolio']
 
 # %% ../nbs/00_utils.ipynb 3
 def mtd(df):
@@ -150,9 +151,9 @@ def aggregate_returns(returns, period=None, compounded=True):
 
 # %% ../nbs/00_utils.ipynb 22
 def to_excess_returns(returns:(pd.Series, pd.DataFrame), # Returns
- rf:(float, pd.Series, pd.DataFrame) , # Risk-Free rate(s)
+ rf:(float, 'pd.Series', 'pd.DataFrame') , # Risk-Free rate(s)
  nperiods:int=None # Will convert rf to different frequency using deannualize
- )->(pd.Series, pd.DataFrame): #Returns - risk free rate
+ )->('pd.Series', 'pd.DataFrame'): #Returns - risk free rate
     """
     Calculates excess returns by subtracting
     risk-free returns from total returns
@@ -170,7 +171,7 @@ def to_excess_returns(returns:(pd.Series, pd.DataFrame), # Returns
     return returns - rf
 
 # %% ../nbs/00_utils.ipynb 23
-def _prepare_prices(data, base=1.):
+def prepare_prices(data, base=1.):
     """Converts return data into prices + cleanup"""
     data = data.copy()
     if isinstance(data, _pd.DataFrame):
@@ -190,7 +191,7 @@ def _prepare_prices(data, base=1.):
     return data
 
 # %% ../nbs/00_utils.ipynb 24
-def _prepare_returns(data, rf=0., nperiods=None):
+def prepare_returns(data, rf=0., nperiods=None):
     """Converts price data into returns + cleanup"""
     data = data.copy()
     function = inspect.stack()[1][3]
@@ -228,7 +229,7 @@ def download_returns(ticker, period="max"):
     return _yf.Ticker(ticker).history(**p)['Close'].pct_change() # may need to change Adj Close
 
 # %% ../nbs/00_utils.ipynb 26
-def _prepare_benchmark(benchmark=None, period="max", rf=0.,
+def prepare_benchmark(benchmark=None, period="max", rf=0.,
                        prepare_returns=True):
     """
     Fetch benchmark if ticker is provided, and pass through
@@ -259,14 +260,14 @@ def _prepare_benchmark(benchmark=None, period="max", rf=0.,
     return benchmark.dropna()
 
 # %% ../nbs/00_utils.ipynb 27
-def _round_to_closest(val, res, decimals=None):
+def round_to_closest(val, res, decimals=None):
     """Round to closest resolution"""
     if decimals is None and "." in str(res):
         decimals = len(str(res).split('.')[1])
     return round(round(val / res) * res, decimals)
 
 # %% ../nbs/00_utils.ipynb 28
-def _file_stream():
+def file_stream():
     """Returns a file stream"""
     return io.BytesIO()
 
@@ -304,16 +305,16 @@ def _count_consecutive(data):
 
 # %% ../nbs/00_utils.ipynb 31
 def _score_str(val):
-    """Returns + sign for positive values (used in plots)"""
+    """Returns + sign for positive values and - for negative values (used in plots)"""
     return ("" if "-" in val else "+") + str(val)
 
 # %% ../nbs/00_utils.ipynb 32
 def make_index(ticker_weights:(dict), #  A python dict with tickers as keys and weights as values
 rebalance="1M", # Pandas resample interval or None for never
 period:(str)="max", # time period of the returns to be downloaded
-returns:(pd.Series, pd.DataFrame)=None, #Returns: If provided, check if returns for the ticker are in this dataframe, before trying to download from yahoo
+returns:('pd.Series', 'pd.DataFrame')=None, #Returns: If provided, check if returns for the ticker are in this dataframe, before trying to download from yahoo
 match_dates:(bool)=False # whether to match dates?
-)->(pd.Series, pd.DataFrame):#Returns for the index
+)->('pd.Series', 'pd.DataFrame'):#Returns for the index
     """
     Makes an index out of the given tickers and weights.
     Optionally you can pass a dataframe with the returns.
@@ -409,8 +410,12 @@ def _flatten_dataframe(df, set_index=None):
     df.to_csv(s_buf)
     s_buf.seek(0)
 
-    df = _pd.read_csv(s_buf)
+    df = pd.read_csv(s_buf)
     if set_index is not None:
         df.set_index(set_index, inplace=True)
 
     return 
+
+# %% ../nbs/00_utils.ipynb 35
+#| export 
+
