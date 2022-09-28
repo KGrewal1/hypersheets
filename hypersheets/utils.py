@@ -150,10 +150,10 @@ def aggregate_returns(returns, period=None, compounded=True):
     return returns
 
 # %% ../nbs/00_utils.ipynb 22
-def to_excess_returns(returns:(pd.Series, pd.DataFrame), # Returns
- rf:(float, 'pd.Series', 'pd.DataFrame') , # Risk-Free rate(s)
+def to_excess_returns(returns:('~pd.Series', '~pd.DataFrame'), # Returns
+ rf:(float, '~pd.Series', '~pd.DataFrame') , # Risk-Free rate(s)
  nperiods:int=None # Will convert rf to different frequency using deannualize
- )->('pd.Series', 'pd.DataFrame'): #Returns - risk free rate
+ )->('~pd.Series', '~pd.DataFrame'): #Returns - risk free rate
     """
     Calculates excess returns by subtracting
     risk-free returns from total returns
