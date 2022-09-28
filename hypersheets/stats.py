@@ -110,7 +110,7 @@ def remove_outliers(returns, quantile=.95):
 def best(returns, aggregate=None, compounded=True, prepare_returns=True):
     """Returns the best day/month/week/quarter/year's return"""
     if prepare_returns:
-        returns = utils._prepare_returns(returns)
+        returns = utils.prepare_returns(returns)
     return utils.aggregate_returns(returns, aggregate, compounded).max()
 
 # %% ../nbs/01_stats.ipynb 18
