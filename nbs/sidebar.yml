@@ -4,3 +4,4 @@ website:
       - index.ipynb
       - 00_utils.ipynb
       - 01_stats.ipynb
+      - 02_core_plots.ipynb
