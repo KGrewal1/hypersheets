@@ -944,7 +944,7 @@ def compare(returns, benchmark, aggregate=None, compounded=True,
 
     return data
 
-# %% ../nbs/01_stats.ipynb 155
+# %% ../nbs/01_stats.ipynb 156
 def monthly_returns(returns, eoy=True, compounded=True, prepare_returns=True):
     """Calculates monthly returns"""
     if isinstance(returns, pd.DataFrame):
