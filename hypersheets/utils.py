@@ -15,7 +15,7 @@ import datetime as dt
 import pandas as pd
 import numpy as np
 import yfinance as yf
-import hypersheets.stats as stats
+import hypersheets.stats as _stats
 
 
 # %% ../nbs/00_utils.ipynb 3
@@ -122,7 +122,7 @@ def to_prices(returns, base=1e5):
     returns = returns.copy().fillna(0).replace(
         [np.inf, -np.inf], float('NaN'))
 
-    return base + base * stats.compsum(returns)
+    return base + base * _stats.compsum(returns)
 
 # %% ../nbs/00_utils.ipynb 18
 def to_log_returns(returns, rf=0., nperiods=None):
@@ -215,7 +215,7 @@ def group_returns(returns, groupby, compounded=True):
     group_returns(df, [df.index.year, df.index.month])
     """
     if compounded:
-        return returns.groupby(groupby).apply(stats.comp)
+        return returns.groupby(groupby).apply(_stats.comp)
     return returns.groupby(groupby).sum()
 
 # %% ../nbs/00_utils.ipynb 33

@@ -21,7 +21,7 @@ import pandas as pd
 import numpy as np
 import seaborn as sns
 from .. import (
-    stats, utils)
+    stats as _stats, utils as _utils)
 
 # %% ../../nbs/02_core_plots.ipynb 4
 #| echo: false
@@ -114,7 +114,7 @@ def plot_returns_bars(returns, benchmark=None,
     df = df.dropna()
     if resample is not None:
         df = df.resample(resample).apply(
-            stats.comp).resample(resample).last()
+            _stats.comp).resample(resample).last()
     # ---------------
 
     fig, ax = plt.subplots(figsize=figsize)
@@ -230,9 +230,9 @@ def plot_timeseries(returns, benchmark=None,
     # ---------------
     if compound is True:
         if cumulative:
-            returns = stats.compsum(returns)
+            returns = _stats.compsum(returns)
             if isinstance(benchmark, pd.Series):
-                benchmark = stats.compsum(benchmark)
+                benchmark = _stats.compsum(benchmark)
         else:
             returns = returns.cumsum()
             if isinstance(benchmark, pd.Series):
@@ -344,7 +344,7 @@ def plot_histogram(returns, resample="M", bins=20,
     if grayscale:
         colors = ['silver', 'gray', 'black']
 
-    apply_fnc = stats.comp if compounded else np.sum
+    apply_fnc = _stats.comp if compounded else np.sum
     returns = returns.fillna(0).resample(resample).apply(
         apply_fnc).resample(resample).last()
 
@@ -526,11 +526,11 @@ def plot_rolling_beta(returns, benchmark,
             returns.index.date[-1:][0].strftime('%e %b \'%y')
         ), fontsize=12, color='gray')
 
-    beta = stats.rolling_greeks(returns, benchmark, window1)['beta'].fillna(0)
+    beta = _stats.rolling_greeks(returns, benchmark, window1)['beta'].fillna(0)
     ax.plot(beta, lw=lw, label=window1_label, color=colors[1])
 
     if window2:
-        ax.plot(stats.rolling_greeks(returns, benchmark, window2)['beta'],
+        ax.plot(_stats.rolling_greeks(returns, benchmark, window2)['beta'],
                 lw=lw, label=window2_label, color="gray", alpha=0.8)
     mmin = min([-100, int(beta.min()*100)])
     mmax = max([100, int(beta.max()*100)])
@@ -591,8 +591,8 @@ def plot_longest_drawdowns(returns, periods=5, lw=1.5,
     if grayscale:
         colors = ['#000000'] * 3
 
-    dd = stats.to_drawdown_series(returns.fillna(0))
-    dddf = stats.drawdown_details(dd)
+    dd = _stats.to_drawdown_series(returns.fillna(0))
+    dddf = _stats.drawdown_details(dd)
     longest_dd = dddf.sort_values(
         by='days', ascending=False, kind='mergesort')[:periods]
 
@@ -613,7 +613,7 @@ def plot_longest_drawdowns(returns, periods=5, lw=1.5,
 
     fig.set_facecolor('white')
     ax.set_facecolor('white')
-    series = stats.compsum(returns) if compounded else returns.cumsum()
+    series = _stats.compsum(returns) if compounded else returns.cumsum()
     ax.plot(series, lw=lw, label="Backtest", color=colors[0])
 
     highlight = 'black' if grayscale else 'red'
@@ -680,7 +680,7 @@ def plot_distribution(returns, figsize=(10, 6),
     port = pd.DataFrame(returns.fillna(0))
     port.columns = ['Daily']
 
-    apply_fnc = stats.comp if compounded else np.sum
+    apply_fnc = _stats.comp if compounded else np.sum
 
     port['Weekly'] = port['Daily'].resample(
         'W-MON').apply(apply_fnc)

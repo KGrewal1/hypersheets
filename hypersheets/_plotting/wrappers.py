@@ -19,9 +19,9 @@ from pandas import DataFrame as df
 import seaborn as sns
 
 from .. import (
-    stats, utils)
+    stats as _stats, utils as _utils)
 from hypersheets._plotting import (
-    core)
+    core as _core)
 
 # %% ../../nbs/03_plot_wrappers.ipynb 4
 #| echo: false
@@ -69,11 +69,11 @@ def returns(returns, benchmark=None,
             title += ' (Volatility Matched)'
 
     if prepare_returns:
-        returns = utils.prepare_returns(returns)
+        returns = _utils.prepare_returns(returns)
 
-    benchmark = utils.prepare_benchmark(benchmark, returns.index)
+    benchmark = _utils.prepare_benchmark(benchmark, returns.index)
 
-    fig = core.plot_timeseries(returns, benchmark, title,
+    fig = _core.plot_timeseries(returns, benchmark, title,
                                 ylabel=ylabel,
                                 match_volatility=match_volatility,
                                 log_scale=False,
@@ -114,11 +114,11 @@ def log_returns(returns, benchmark=None,
     title += ')'
 
     if prepare_returns:
-        returns = utils.prepare_returns(returns)
+        returns = _utils.prepare_returns(returns)
 
-    benchmark = utils.prepare_benchmark(benchmark, returns.index)
+    benchmark = _utils.prepare_benchmark(benchmark, returns.index)
 
-    fig = core.plot_timeseries(returns, benchmark, title,
+    fig = _core.plot_timeseries(returns, benchmark, title,
                                 ylabel=ylabel,
                                 match_volatility=match_volatility,
                                 log_scale=True,
@@ -145,9 +145,9 @@ def daily_returns(returns,
                   prepare_returns=True):
 
     if prepare_returns:
-        returns = utils.prepare_returns(returns)
+        returns = _utils.prepare_returns(returns)
 
-    fig = core.plot_timeseries(returns, None, 'Daily Returns',
+    fig = _core.plot_timeseries(returns, None, 'Daily Returns',
                                 ylabel=ylabel,
                                 match_volatility=False,
                                 log_scale=log_scale,
@@ -176,20 +176,20 @@ def yearly_returns(returns, benchmark=None,
     title = 'EOY Returns'
     if benchmark is not None:
         title += ' vs %s' % benchmark_label
-        benchmark = utils.prepare_benchmark(
+        benchmark = _utils.prepare_benchmark(
             benchmark, returns.index).resample('A').apply(
-                stats.comp).resample('A').last()
+                _stats.comp).resample('A').last()
 
     if prepare_returns:
-        returns = utils.prepare_returns(returns)
+        returns = _utils.prepare_returns(returns)
 
     if compounded:
-        returns = returns.resample('A').apply(stats.comp)
+        returns = returns.resample('A').apply(_stats.comp)
     else:
         returns = returns.resample('A').apply(df.sum)
     returns = returns.resample('A').last()
 
-    fig = core.plot_returns_bars(returns, benchmark,
+    fig = _core.plot_returns_bars(returns, benchmark,
                                   returns_label=returns_label, benchmark_label=benchmark_label,
                                   fontname=fontname,
                                   hline=returns.mean(),
@@ -214,9 +214,9 @@ def distribution(returns, fontname='Arial', grayscale=False, ylabel=True,
                  savefig=None, show=True,
                  prepare_returns=True):
     if prepare_returns:
-        returns = utils.prepare_returns(returns)
+        returns = _utils.prepare_returns(returns)
 
-    fig = core.plot_distribution(returns,
+    fig = _core.plot_distribution(returns,
                                   fontname=fontname,
                                   grayscale=grayscale,
                                   figsize=figsize,
@@ -234,7 +234,7 @@ def histogram(returns, resample='M', fontname='Arial',
               prepare_returns=True):
 
     if prepare_returns:
-        returns = utils.prepare_returns(returns)
+        returns = _utils.prepare_returns(returns)
 
     if resample == 'W':
         title = "Weekly "
@@ -247,7 +247,7 @@ def histogram(returns, resample='M', fontname='Arial',
     else:
         title = ""
 
-    return core.plot_histogram(returns,
+    return _core.plot_histogram(returns,
                                 resample=resample,
                                 grayscale=grayscale,
                                 fontname=fontname,
@@ -264,9 +264,9 @@ def drawdown(returns, grayscale=False, figsize=(10, 3),
              match_volatility=False, compound=False, ylabel="Drawdown",
              resample=None, subtitle=True, savefig=None, show=True):
 
-    dd = stats.to_drawdown_series(returns)
+    dd = _stats.to_drawdown_series(returns)
 
-    fig = core.plot_timeseries(dd, title='Underwater Plot',
+    fig = _core.plot_timeseries(dd, title='Underwater Plot',
                                 hline=dd.mean(), hlw=2, hllabel="Average",
                                 returns_label="Drawdown",
                                 compound=compound, match_volatility=match_volatility,
@@ -286,9 +286,9 @@ def drawdowns_periods(returns, periods=5, lw=1.5, log_scale=False,
                       savefig=None, show=True,
                       prepare_returns=True):
     if prepare_returns:
-        returns = utils.prepare_returns(returns)
+        returns = _utils.prepare_returns(returns)
 
-    fig = core.plot_longest_drawdowns(returns,
+    fig = _core.plot_longest_drawdowns(returns,
                                        periods=periods,
                                        lw=lw,
                                        log_scale=log_scale,
@@ -313,11 +313,11 @@ def rolling_beta(returns, benchmark,
                  prepare_returns=True):
 
     if prepare_returns:
-        returns = utils.prepare_returns(returns)
+        returns = _utils.prepare_returns(returns)
 
-    benchmark = utils.prepare_benchmark(benchmark, returns.index)
+    benchmark = _utils.prepare_benchmark(benchmark, returns.index)
 
-    fig = core.plot_rolling_beta(returns, benchmark,
+    fig = _core.plot_rolling_beta(returns, benchmark,
                                   window1=window1, window1_label=window1_label,
                                   window2=window2, window2_label=window2_label,
                                   title="Rolling Beta to %s" % benchmark_label, 
@@ -340,14 +340,14 @@ def rolling_volatility(returns, benchmark=None,
                        figsize=(10, 3), ylabel="Volatility",
                        subtitle=True, savefig=None, show=True):
 
-    returns = stats.rolling_volatility(returns, period, periods_per_year)
+    returns = _stats.rolling_volatility(returns, period, periods_per_year)
 
     if benchmark is not None:
-        benchmark = utils.prepare_benchmark(benchmark, returns.index)
-        benchmark = stats.rolling_volatility(
+        benchmark = _utils.prepare_benchmark(benchmark, returns.index)
+        benchmark = _stats.rolling_volatility(
             benchmark, period, periods_per_year, prepare_returns=False)
 
-    fig = core.plot_rolling_stats(returns, benchmark,
+    fig = _core.plot_rolling_stats(returns, benchmark,
                                    hline=returns.mean(),
                                    hlw=1.5,
                                    ylabel=ylabel,
@@ -373,16 +373,16 @@ def rolling_sharpe(returns, benchmark=None, rf=0.,
                    figsize=(10, 3), ylabel="Sharpe",
                    subtitle=True, savefig=None, show=True):
 
-    returns = stats.rolling_sharpe(
+    returns = _stats.rolling_sharpe(
         returns, rf, period, True, periods_per_year, )
 
     if benchmark is not None:
-        benchmark = utils.prepare_benchmark(benchmark, returns.index, rf)
-        benchmark = stats.rolling_sharpe(
+        benchmark = _utils.prepare_benchmark(benchmark, returns.index, rf)
+        benchmark = _stats.rolling_sharpe(
             benchmark, rf, period, True, periods_per_year,
             prepare_returns=False)
 
-    fig = core.plot_rolling_stats(returns, benchmark,
+    fig = _core.plot_rolling_stats(returns, benchmark,
                                    hline=returns.mean(),
                                    hlw=1.5,
                                    ylabel=ylabel,
@@ -407,16 +407,16 @@ def rolling_sortino(returns, benchmark=None, rf=0.,
                     figsize=(10, 3), ylabel="Sortino",
                     subtitle=True, savefig=None, show=True):
 
-    returns = stats.rolling_sortino(
+    returns = _stats.rolling_sortino(
         returns, rf, period, True, periods_per_year)
 
     if benchmark is not None:
-        benchmark = utils.prepare_benchmark(benchmark, returns.index, rf)
-        benchmark = stats.rolling_sortino(
+        benchmark = _utils.prepare_benchmark(benchmark, returns.index, rf)
+        benchmark = _stats.rolling_sortino(
             benchmark, rf, period, True, periods_per_year,
             prepare_returns=False)
 
-    fig = core.plot_rolling_stats(returns, benchmark,
+    fig = _core.plot_rolling_stats(returns, benchmark,
                                    hline=returns.mean(),
                                    hlw=1.5,
                                    ylabel=ylabel,
@@ -442,13 +442,13 @@ def monthly_heatmap(returns, annot_size=10, figsize=(10, 5),
     # colors, ls, alpha = _core._get_colors(grayscale)
     cmap = 'gray' if grayscale else 'RdYlGn'
     
-    vmax = (stats.monthly_returns(returns, eoy=False,
+    vmax = (_stats.monthly_returns(returns, eoy=False,
                                      compounded=compounded) * 100).abs().max().max()
     
     #if vmax < 1: vmax = 1 ##
     
 
-    returns = stats.monthly_returns(returns, eoy=eoy,
+    returns = _stats.monthly_returns(returns, eoy=eoy,
                                      compounded=compounded) * 100
     
     
@@ -531,9 +531,9 @@ def outperformance_heatmap(returns, benchmark=None, annot_size=10, figsize=(10, 
     cmap = 'gray' if grayscale else 'RdYlGn'
     
     vmax = ((
-        stats.monthly_returns(returns, eoy=False,
+        _stats.monthly_returns(returns, eoy=False,
                                      compounded=compounded)-
-        stats.monthly_returns(benchmark, eoy=False,
+        _stats.monthly_returns(benchmark, eoy=False,
                                compounded=compounded)
             )* 100).abs().max().max()
     
@@ -541,9 +541,9 @@ def outperformance_heatmap(returns, benchmark=None, annot_size=10, figsize=(10, 
     
 
     outperformance = ((
-        stats.monthly_returns(returns, eoy=eoy,
+        _stats.monthly_returns(returns, eoy=eoy,
                                      compounded=compounded)-
-        stats.monthly_returns(benchmark, eoy=eoy,
+        _stats.monthly_returns(benchmark, eoy=eoy,
                                compounded=compounded)
             )* 100)
     
