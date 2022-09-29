@@ -63,7 +63,7 @@ def multi_shift(df, shift=3):
 # %% ../nbs/00_utils.ipynb 12
 def to_returns(prices, rf=0.):
     """Calculates the simple arithmetic returns of a price series"""
-    return _prepare_returns(prices, rf)
+    return prepare_returns(prices, rf)
 
 # %% ../nbs/00_utils.ipynb 13
 def to_prices(returns, base=1e5):
@@ -90,7 +90,7 @@ def log_returns(returns, rf=0., nperiods=None):
 # %% ../nbs/00_utils.ipynb 19
 def exponential_stdev(returns, window=30, is_halflife=False):
     """Returns series representing exponential volatility of returns"""
-    returns = _prepare_returns(returns)
+    returns = prepare_returns(returns)
     halflife = window if is_halflife else None
     return returns.ewm(com=None, span=window,
                        halflife=halflife, min_periods=window).std()
@@ -240,14 +240,14 @@ def download_returns(ticker, period="max"):
     else:
         p = {"period": period}
 
-    return yf.Ticker(ticker).history(**p)['Close'].pct_change() # this is automatically the adjusted value
+    return prepare_returns(yf.Ticker(ticker).history(**p)['Close']) # this is automatically the adjusted value
 
 # %% ../nbs/00_utils.ipynb 30
 def prepare_benchmark(benchmark=None, period="max", rf=0.,
-                       prepare_returns=True):
+                       prep_returns=True):
     """
     Fetch benchmark if ticker is provided, and pass through
-    _prepare_returns()
+    prepare_returns()
     period can be options or (expected) pd.DatetimeIndex range
     """
     if benchmark is None:
@@ -269,7 +269,7 @@ def prepare_benchmark(benchmark=None, period="max", rf=0.,
             .reindex(period).pct_change().fillna(0)
         benchmark = benchmark[benchmark.index.isin(period)]
 
-    if prepare_returns:
+    if prep_returns:
         return prepare_returns(benchmark.dropna(), rf=rf)
     return benchmark.dropna()
 
@@ -390,7 +390,7 @@ match_dates:(bool)=False # whether to match dates?
 def make_portfolio(returns, start_balance=1e5,
                    mode="comp", round_to=None):
     """Calculates compounded value of portfolio"""
-    returns = _prepare_returns(returns)
+    returns = prepare_returns(returns)
 
     if mode.lower() in ["cumsum", "sum"]:
         p1 = start_balance + start_balance * returns.cumsum()
