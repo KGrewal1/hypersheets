@@ -848,23 +848,23 @@ def information_ratio(returns, benchmark, prepare_returns=True):
     (basically the risk return ratio of the net profits)
     """
     if prepare_returns:
-        returns = _utils._prepare_returns(returns)
-    diff_rets = returns - _utils._prepare_benchmark(benchmark, returns.index)
+        returns = utils.prepare_returns(returns)
+    diff_rets = returns - utils.prepare_benchmark(benchmark, returns.index)
 
     return diff_rets.mean() / diff_rets.std()
 
-# %% ../nbs/01_stats.ipynb 146
+# %% ../nbs/01_stats.ipynb 147
 def greeks(returns, benchmark, periods=252., prepare_returns=True):
     """Calculates alpha and beta of the portfolio"""
     # ----------------------------
     # data cleanup
     if prepare_returns:
-        returns = _utils._prepare_returns(returns)
-    benchmark = _utils._prepare_benchmark(benchmark, returns.index)
+        returns = utils.prepare_returns(returns)
+    benchmark = utils.prepare_benchmark(benchmark, returns.index)
     # ----------------------------
 
     # find covariance
-    matrix = _np.cov(returns, benchmark)
+    matrix = np.cov(returns, benchmark)
     beta = matrix[0, 1] / matrix[1, 1]
 
     # calculates measures now
@@ -877,14 +877,14 @@ def greeks(returns, benchmark, periods=252., prepare_returns=True):
         # "vol": _np.sqrt(matrix[0, 0]) * _np.sqrt(periods)
     }).fillna(0)
 
-# %% ../nbs/01_stats.ipynb 147
+# %% ../nbs/01_stats.ipynb 149
 def rolling_greeks(returns, benchmark, periods=252, prepare_returns=True):
     """Calculates rolling alpha and beta of the portfolio"""
     if prepare_returns:
-        returns = _utils._prepare_returns(returns)
+        returns = utils.prepare_returns(returns)
     df = pd.DataFrame(data={
         "returns": returns,
-        "benchmark": _utils._prepare_benchmark(benchmark, returns.index)
+        "benchmark": utils.prepare_benchmark(benchmark, returns.index)
     })
     df = df.fillna(0)
     corr = df.rolling(int(periods)).corr().unstack()['returns']['benchmark']
@@ -899,8 +899,8 @@ def rolling_greeks(returns, benchmark, periods=252, prepare_returns=True):
         "alpha": alpha
     })
 
-# %% ../nbs/01_stats.ipynb 148
-def treynor_ratio(returns, benchmark, periods=252., rf=0.):
+# %% ../nbs/01_stats.ipynb 151
+def treynor_ratio(returns, benchmark, periods=252., rf=0., prepare_returns=True):
     """
     Calculates the Treynor ratio
     Args:
@@ -908,6 +908,8 @@ def treynor_ratio(returns, benchmark, periods=252., rf=0.):
         * benchmatk (String, Series, DataFrame): Benchmark to compare beta to
         * periods (int): Freq. of returns (252/365 for daily, 12 for monthly)
     """
+    if prepare_returns:
+        returns = utils.prepare_returns(returns)
     if isinstance(returns, pd.DataFrame):
         returns = returns[returns.columns[0]]
 
@@ -916,7 +918,7 @@ def treynor_ratio(returns, benchmark, periods=252., rf=0.):
         return 0
     return (comp(returns) - rf) / beta
 
-# %% ../nbs/01_stats.ipynb 149
+# %% ../nbs/01_stats.ipynb 153
 def compare(returns, benchmark, aggregate=None, compounded=True,
             round_vals=None, prepare_returns=True):
     """
@@ -924,25 +926,25 @@ def compare(returns, benchmark, aggregate=None, compounded=True,
     day/week/month/quarter/year basis
     """
     if prepare_returns:
-        returns = _utils._prepare_returns(returns)
-    benchmark = _utils._prepare_benchmark(benchmark, returns.index)
+        returns = utils.prepare_returns(returns)
+    benchmark = utils.prepare_benchmark(benchmark, returns.index)
 
     data = pd.DataFrame(data={
-        'Benchmark': _utils.aggregate_returns(
-            benchmark, aggregate, compounded) * 100,
-        'Returns': _utils.aggregate_returns(
-            returns, aggregate, compounded) * 100
+        'Returns': utils.aggregate_returns(
+            returns, aggregate, compounded) * 100,
+        'Benchmark': utils.aggregate_returns(
+            benchmark, aggregate, compounded) * 100
     })
 
     data['Multiplier'] = data['Returns'] / data['Benchmark']
-    data['Won'] = _np.where(data['Returns'] >= data['Benchmark'], '+', '-')
+    data['Won'] = np.where(data['Returns'] >= data['Benchmark'], '+', '-')
 
     if round_vals is not None:
-        return _np.round(data, round_vals)
+        return np.round(data, round_vals)
 
     return data
 
-# %% ../nbs/01_stats.ipynb 150
+# %% ../nbs/01_stats.ipynb 155
 def monthly_returns(returns, eoy=True, compounded=True, prepare_returns=True):
     """Calculates monthly returns"""
     if isinstance(returns, pd.DataFrame):
@@ -956,11 +958,11 @@ def monthly_returns(returns, eoy=True, compounded=True, prepare_returns=True):
             returns = returns[returns.columns[0]]
 
     if prepare_returns:
-        returns = _utils._prepare_returns(returns)
+        returns = utils.prepare_returns(returns)
     original_returns = returns.copy()
 
     returns = pd.DataFrame(
-        _utils.group_returns(returns,
+        utils.group_returns(returns,
                              returns.index.strftime('%Y-%m-01'),
                              compounded))
 
@@ -985,7 +987,7 @@ def monthly_returns(returns, eoy=True, compounded=True, prepare_returns=True):
                        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']]
 
     if eoy:
-        returns['eoy'] = _utils.group_returns(
+        returns['eoy'] = utils.group_returns(
             original_returns, 
             original_returns.index.year, 
             compounded=compounded).values
