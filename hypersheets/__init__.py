@@ -25,11 +25,11 @@ from . import version
 __version__ = version.version
 __author__ = "Ran Aroussi"
 
-# from . import stats, utils, plots, reports
+from . import stats, utils, plots, reports
 
-# __all__ = ['stats', 'plots', 'reports', 'utils']
+__all__ = ['stats', 'plots', 'reports', 'utils']
 
-# # try automatic matplotlib inline
-# utils._in_notebook(matplotlib_inline=True)
+# try automatic matplotlib inline
+utils._in_notebook(matplotlib_inline=True)
 
 
