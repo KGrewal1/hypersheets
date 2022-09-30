@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.1.251">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="User functions for plotting data">
+
+<title>hypersheets - Plotting Function</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="hypersheets - Plotting Function">
+<meta property="og:description" content="User functions for plotting data">
+<meta property="og:site-name" content="hypersheets">
+<meta name="twitter:title" content="hypersheets - Plotting Function">
+<meta name="twitter:description" content="User functions for plotting data">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">hypersheets</span>
+    </a>
+  </div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Plotting Function</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">hypersheets</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./utils.html" class="sidebar-item-text sidebar-link">Utils</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./stats.html" class="sidebar-item-text sidebar-link">Stats</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./core_plots.html" class="sidebar-item-text sidebar-link">Core Plots</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./plots.html" class="sidebar-item-text sidebar-link active">Plotting Function</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reports.html" class="sidebar-item-text sidebar-link">Reports</a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#to_plotly" id="toc-to_plotly" class="nav-link active" data-scroll-target="#to_plotly">to_plotly</a></li>
+  <li><a href="#snapshot" id="toc-snapshot" class="nav-link" data-scroll-target="#snapshot">snapshot</a></li>
+  <li><a href="#earnings" id="toc-earnings" class="nav-link" data-scroll-target="#earnings">earnings</a></li>
+  <li><a href="#returns" id="toc-returns" class="nav-link" data-scroll-target="#returns">returns</a></li>
+  <li><a href="#daily_returns" id="toc-daily_returns" class="nav-link" data-scroll-target="#daily_returns">daily_returns</a></li>
+  <li><a href="#log_returns" id="toc-log_returns" class="nav-link" data-scroll-target="#log_returns">log_returns</a></li>
+  <li><a href="#yearly_returns" id="toc-yearly_returns" class="nav-link" data-scroll-target="#yearly_returns">yearly_returns</a></li>
+  <li><a href="#distribution" id="toc-distribution" class="nav-link" data-scroll-target="#distribution">distribution</a></li>
+  <li><a href="#histogram" id="toc-histogram" class="nav-link" data-scroll-target="#histogram">histogram</a></li>
+  <li><a href="#drawdown" id="toc-drawdown" class="nav-link" data-scroll-target="#drawdown">drawdown</a></li>
+  <li><a href="#drawdowns_periods" id="toc-drawdowns_periods" class="nav-link" data-scroll-target="#drawdowns_periods">drawdowns_periods</a></li>
+  <li><a href="#rolling_beta" id="toc-rolling_beta" class="nav-link" data-scroll-target="#rolling_beta">rolling_beta</a></li>
+  <li><a href="#rolling_volatility" id="toc-rolling_volatility" class="nav-link" data-scroll-target="#rolling_volatility">rolling_volatility</a></li>
+  <li><a href="#rolling_sharpe" id="toc-rolling_sharpe" class="nav-link" data-scroll-target="#rolling_sharpe">rolling_sharpe</a></li>
+  <li><a href="#rolling_sortino" id="toc-rolling_sortino" class="nav-link" data-scroll-target="#rolling_sortino">rolling_sortino</a></li>
+  <li><a href="#monthly_heatmap" id="toc-monthly_heatmap" class="nav-link" data-scroll-target="#monthly_heatmap">monthly_heatmap</a></li>
+  <li><a href="#outperformance_heatmap" id="toc-outperformance_heatmap" class="nav-link" data-scroll-target="#outperformance_heatmap">outperformance_heatmap</a></li>
+  <li><a href="#monthly_returns" id="toc-monthly_returns" class="nav-link" data-scroll-target="#monthly_returns">monthly_returns</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/KGrewal1/hypersheets/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Plotting Function</h1>
+</div>
+
+<div>
+  <div class="description">
+    User functions for plotting data
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<hr>
+<p><a href="https://github.com/KGrewal1/hypersheets/blob/main/hypersheets/plots.py#L52" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="to_plotly" class="level3">
+<h3 class="anchored" data-anchor-id="to_plotly">to_plotly</h3>
+<blockquote class="blockquote">
+<pre><code> to_plotly (fig)</code></pre>
+</blockquote>
+<hr>
+<p><a href="https://github.com/KGrewal1/hypersheets/blob/main/hypersheets/plots.py#L62" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="snapshot" class="level3">
+<h3 class="anchored" data-anchor-id="snapshot">snapshot</h3>
+<blockquote class="blockquote">
+<pre><code> snapshot (returns, grayscale=False, figsize=(10, 8), title='Portfolio
+           Summary', fontname='Arial', lw=1.5, mode='comp', subtitle=True,
+           savefig=None, show=True, log_scale=False)</code></pre>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>values <span class="op">=</span> _utils.download_returns(<span class="st">'SPY'</span>, <span class="st">'5y'</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>snapshot(values)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="03_plots_files/figure-html/cell-4-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<hr>
+<p><a href="https://github.com/KGrewal1/hypersheets/blob/main/hypersheets/plots.py#L177" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="earnings" class="level3">
+<h3 class="anchored" data-anchor-id="earnings">earnings</h3>
+<blockquote class="blockquote">
+<pre><code> earnings (returns, start_balance=100000.0, mode='comp', grayscale=False,
+           figsize=(10, 6), title='Portfolio Earnings', fontname='Arial',
+           lw=1.5, subtitle=True, savefig=None, show=True)</code></pre>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>values <span class="op">=</span> _utils.download_returns(<span class="st">'SPY'</span>, <span class="st">'5y'</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>earnings(values)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="03_plots_files/figure-html/cell-6-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<hr>
+<p><a href="https://github.com/KGrewal1/hypersheets/blob/main/hypersheets/plots.py#L259" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="returns" class="level3">
+<h3 class="anchored" data-anchor-id="returns">returns</h3>
+<blockquote class="blockquote">
+<pre><code> returns (returns, benchmark=None, grayscale=False, figsize=(10, 6),
+          returns_label='Strategy', benchmark_label='Benchmark',
+          fontname='Arial', lw=1.5, match_volatility=False, compound=True,
+          cumulative=True, resample=None, ylabel='Cumulative Returns',
+          subtitle=True, savefig=None, show=True, prepare_returns=False)</code></pre>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>values <span class="op">=</span> _utils.download_returns(<span class="st">'SPY'</span>, <span class="st">'5y'</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>benchmark <span class="op">=</span> _utils.download_returns(<span class="st">'QQQ'</span>, <span class="st">'5y'</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>returns(values, benchmark, returns_label<span class="op">=</span><span class="st">"SPY"</span>, benchmark_label<span class="op">=</span><span class="st">"QQQ"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="03_plots_files/figure-html/cell-8-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<hr>
+<p><a href="https://github.com/KGrewal1/hypersheets/blob/main/hypersheets/plots.py#L346" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="daily_returns" class="level3">
+<h3 class="anchored" data-anchor-id="daily_returns">daily_returns</h3>
+<blockquote class="blockquote">
+<pre><code> daily_returns (returns, grayscale=False, figsize=(10, 4),
+                fontname='Arial', lw=0.5, log_scale=False,
+                ylabel='Returns', subtitle=True, savefig=None, show=True,
+                prepare_returns=True)</code></pre>
+</blockquote>
+<hr>
+<p><a href="https://github.com/KGrewal1/hypersheets/blob/main/hypersheets/utils.py#L137" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="log_returns" class="level3">
+<h3 class="anchored" data-anchor-id="log_returns">log_returns</h3>
+<blockquote class="blockquote">
+<pre><code> log_returns (returns, benchmark=None, grayscale=False, figsize=(10, 5),
+              returns_label='Strategy', benchmark_label='Benchmark',
+              fontname='Arial', lw=1.5, match_volatility=False,
+              compound=True, cumulative=True, resample=None,
+              ylabel='Cumulative Returns', subtitle=True, savefig=None,
+              show=True, prepare_returns=False)</code></pre>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>values <span class="op">=</span> _utils.download_returns(<span class="st">'SPY'</span>, <span class="st">'5y'</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>benchmark <span class="op">=</span> _utils.download_returns(<span class="st">'QQQ'</span>, <span class="st">'5y'</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>log_returns(values, benchmark, returns_label<span class="op">=</span><span class="st">"SPY"</span>, benchmark_label<span class="op">=</span><span class="st">"QQQ"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="03_plots_files/figure-html/cell-11-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<hr>
+<p><a href="https://github.com/KGrewal1/hypersheets/blob/main/hypersheets/plots.py#L372" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="yearly_returns" class="level3">
+<h3 class="anchored" data-anchor-id="yearly_returns">yearly_returns</h3>
+<blockquote class="blockquote">
+<pre><code> yearly_returns (returns, benchmark=None, returns_label='Strategy',
+                 benchmark_label='Benchmark', fontname='Arial',
+                 grayscale=False, hlw=1.5, hlcolor='red', hllabel='',
+                 match_volatility=False, log_scale=False, figsize=(10, 5),
+                 ylabel=True, subtitle=True, compounded=True,
+                 savefig=None, show=True, prepare_returns=True)</code></pre>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>values <span class="op">=</span> _utils.download_returns(<span class="st">'SPY'</span>, <span class="st">'5y'</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>benchmark <span class="op">=</span> _utils.download_returns(<span class="st">'QQQ'</span>, <span class="st">'5y'</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>yearly_returns(values, benchmark, returns_label<span class="op">=</span><span class="st">"SPY"</span>, benchmark_label<span class="op">=</span><span class="st">"QQQ"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="03_plots_files/figure-html/cell-13-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<hr>
+<p><a href="https://github.com/KGrewal1/hypersheets/blob/main/hypersheets/stats.py#L41" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="distribution" class="level3">
+<h3 class="anchored" data-anchor-id="distribution">distribution</h3>
+<blockquote class="blockquote">
+<pre><code> distribution (returns, fontname='Arial', grayscale=False, ylabel=True,
+               figsize=(10, 6), subtitle=True, compounded=True,
+               savefig=None, show=True, prepare_returns=True)</code></pre>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>values <span class="op">=</span> _utils.download_returns(<span class="st">'SPY'</span>, <span class="st">'5y'</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>distribution(values)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="03_plots_files/figure-html/cell-15-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<hr>
+<p><a href="https://github.com/KGrewal1/hypersheets/blob/main/hypersheets/plots.py#L437" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="histogram" class="level3">
+<h3 class="anchored" data-anchor-id="histogram">histogram</h3>
+<blockquote class="blockquote">
+<pre><code> histogram (returns, resample='M', fontname='Arial', grayscale=False,
+            figsize=(10, 5), ylabel=True, subtitle=True, compounded=True,
+            savefig=None, show=True, prepare_returns=True)</code></pre>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>values <span class="op">=</span> _utils.download_returns(<span class="st">'SPY'</span>, <span class="st">'5y'</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>histogram(values)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="03_plots_files/figure-html/cell-17-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<hr>
+<p><a href="https://github.com/KGrewal1/hypersheets/blob/main/hypersheets/plots.py#L468" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="drawdown" class="level3">
+<h3 class="anchored" data-anchor-id="drawdown">drawdown</h3>
+<blockquote class="blockquote">
+<pre><code> drawdown (returns, grayscale=False, figsize=(10, 3), fontname='Arial',
+           lw=1, log_scale=False, match_volatility=False, compound=False,
+           ylabel='Drawdown', resample=None, subtitle=True, savefig=None,
+           show=True)</code></pre>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>values <span class="op">=</span> _utils.download_returns(<span class="st">'SPY'</span>, <span class="st">'5y'</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>drawdown(values)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="03_plots_files/figure-html/cell-19-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<hr>
+<p><a href="https://github.com/KGrewal1/hypersheets/blob/main/hypersheets/plots.py#L489" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="drawdowns_periods" class="level3">
+<h3 class="anchored" data-anchor-id="drawdowns_periods">drawdowns_periods</h3>
+<blockquote class="blockquote">
+<pre><code> drawdowns_periods (returns, periods=5, lw=1.5, log_scale=False,
+                    fontname='Arial', grayscale=False, figsize=(10, 5),
+                    ylabel=True, subtitle=True, compounded=True,
+                    savefig=None, show=True, prepare_returns=True)</code></pre>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>values <span class="op">=</span> _utils.download_returns(<span class="st">'SPY'</span>, <span class="st">'5y'</span>)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>drawdowns_periods(values)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="03_plots_files/figure-html/cell-21-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<hr>
+<p><a href="https://github.com/KGrewal1/hypersheets/blob/main/hypersheets/plots.py#L512" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="rolling_beta" class="level3">
+<h3 class="anchored" data-anchor-id="rolling_beta">rolling_beta</h3>
+<blockquote class="blockquote">
+<pre><code> rolling_beta (returns, benchmark, benchmark_label='Benchmark',
+               window1=126, window1_label='6-Months', window2=252,
+               window2_label='12-Months', lw=1.5, fontname='Arial',
+               grayscale=False, figsize=(10, 3), ylabel=True,
+               subtitle=True, savefig=None, show=True,
+               prepare_returns=True)</code></pre>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>values <span class="op">=</span> _utils.download_returns(<span class="st">'SPY'</span>, <span class="st">'5y'</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>benchmark <span class="op">=</span> _utils.download_returns(<span class="st">'QQQ'</span>, <span class="st">'5y'</span>)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>rolling_beta(values, benchmark)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="03_plots_files/figure-html/cell-23-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<hr>
+<p><a href="https://github.com/KGrewal1/hypersheets/blob/main/hypersheets/stats.py#L237" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="rolling_volatility" class="level3">
+<h3 class="anchored" data-anchor-id="rolling_volatility">rolling_volatility</h3>
+<blockquote class="blockquote">
+<pre><code> rolling_volatility (returns, benchmark=None, returns_label='Strategy',
+                     benchmark_label='Benchmark', period=126,
+                     period_label='6-Months', periods_per_year=252,
+                     lw=1.5, fontname='Arial', grayscale=False,
+                     figsize=(10, 3), ylabel='Volatility', subtitle=True,
+                     savefig=None, show=True)</code></pre>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>values <span class="op">=</span> _utils.download_returns(<span class="st">'SPY'</span>, <span class="st">'5y'</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>benchmark <span class="op">=</span> _utils.download_returns(<span class="st">'QQQ'</span>, <span class="st">'5y'</span>)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>rolling_volatility(values, benchmark)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="03_plots_files/figure-html/cell-25-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<hr>
+<p><a href="https://github.com/KGrewal1/hypersheets/blob/main/hypersheets/stats.py#L308" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="rolling_sharpe" class="level3">
+<h3 class="anchored" data-anchor-id="rolling_sharpe">rolling_sharpe</h3>
+<blockquote class="blockquote">
+<pre><code> rolling_sharpe (returns, benchmark=None, rf=0.0,
+                 returns_label='Strategy', benchmark_label='Benchmark',
+                 period=126, period_label='6-Months',
+                 periods_per_year=252, lw=1.25, fontname='Arial',
+                 grayscale=False, figsize=(10, 3), ylabel='Sharpe',
+                 subtitle=True, savefig=None, show=True)</code></pre>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>values <span class="op">=</span> _utils.download_returns(<span class="st">'SPY'</span>, <span class="st">'5y'</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>benchmark <span class="op">=</span> _utils.download_returns(<span class="st">'QQQ'</span>, <span class="st">'5y'</span>)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>rolling_sharpe(values, benchmark)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="03_plots_files/figure-html/cell-27-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<hr>
+<p><a href="https://github.com/KGrewal1/hypersheets/blob/main/hypersheets/stats.py#L368" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="rolling_sortino" class="level3">
+<h3 class="anchored" data-anchor-id="rolling_sortino">rolling_sortino</h3>
+<blockquote class="blockquote">
+<pre><code> rolling_sortino (returns, benchmark=None, rf=0.0,
+                  returns_label='Strategy', benchmark_label='Benchmark',
+                  period=126, period_label='6-Months',
+                  periods_per_year=252, lw=1.25, fontname='Arial',
+                  grayscale=False, figsize=(10, 3), ylabel='Sortino',
+                  subtitle=True, savefig=None, show=True)</code></pre>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>values <span class="op">=</span> _utils.download_returns(<span class="st">'SPY'</span>, <span class="st">'5y'</span>)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>benchmark <span class="op">=</span> _utils.download_returns(<span class="st">'QQQ'</span>, <span class="st">'5y'</span>)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>rolling_sortino(values, benchmark)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="03_plots_files/figure-html/cell-29-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<hr>
+<p><a href="https://github.com/KGrewal1/hypersheets/blob/main/hypersheets/plots.py#L642" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="monthly_heatmap" class="level3">
+<h3 class="anchored" data-anchor-id="monthly_heatmap">monthly_heatmap</h3>
+<blockquote class="blockquote">
+<pre><code> monthly_heatmap (returns, annot_size=10, figsize=(10, 5), cbar=True,
+                  square=False, compounded=True, eoy=False,
+                  grayscale=False, fontname='Arial', ylabel=True,
+                  savefig=None, show=True)</code></pre>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>values <span class="op">=</span> _utils.download_returns(<span class="st">'SPY'</span>, <span class="st">'5y'</span>)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>monthly_heatmap(values, eoy<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="03_plots_files/figure-html/cell-31-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<hr>
+<p><a href="https://github.com/KGrewal1/hypersheets/blob/main/hypersheets/plots.py#L730" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="outperformance_heatmap" class="level3">
+<h3 class="anchored" data-anchor-id="outperformance_heatmap">outperformance_heatmap</h3>
+<blockquote class="blockquote">
+<pre><code> outperformance_heatmap (returns, benchmark=None, annot_size=10,
+                         figsize=(10, 5), cbar=True, square=False,
+                         benchmark_label='Benchmark', compounded=True,
+                         eoy=False, grayscale=False, fontname='Arial',
+                         ylabel=True, savefig=None, show=True)</code></pre>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>values <span class="op">=</span> _utils.download_returns(<span class="st">'SPY'</span>, <span class="st">'5y'</span>)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>benchmark <span class="op">=</span> _utils.download_returns(<span class="st">'QQQ'</span>, <span class="st">'5y'</span>)</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>outperformance_heatmap(values, benchmark)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="03_plots_files/figure-html/cell-33-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<hr>
+<p><a href="https://github.com/KGrewal1/hypersheets/blob/main/hypersheets/stats.py#L954" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="monthly_returns" class="level3">
+<h3 class="anchored" data-anchor-id="monthly_returns">monthly_returns</h3>
+<blockquote class="blockquote">
+<pre><code> monthly_returns (returns, annot_size=10, figsize=(10, 5), cbar=True,
+                  square=False, compounded=True, eoy=False,
+                  grayscale=False, fontname='Arial', ylabel=True,
+                  savefig=None, show=True)</code></pre>
+</blockquote>
+<p>A wrapper for monthly heatmaps</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
