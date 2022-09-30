@@ -15,10 +15,10 @@ from base64 import b64encode
 import re as regex
 from tabulate import tabulate
 import hypersheets
-# from hypersheets import (
-#     __version__, stats as _stats,
-#     utils as _utils, plots as _plots
-# )
+from hypersheets import (
+    __version__, stats as _stats,
+    utils as _utils, plots as _plots
+)
 from dateutil.relativedelta import relativedelta
 
 try:

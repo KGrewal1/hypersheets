@@ -250,7 +250,7 @@ def aggregate_returns(returns, period=None, compounded=True):
         return grouped
 
     if 'eoq' in period or period == "Q":
-        grouped = group_returns(returns, [index.year, index.quarterh],
+        grouped = group_returns(returns, [index.year, index.quarter],
                              compounded=compounded)
         grouped.index = grouped.index.to_flat_index()
         return grouped
