@@ -863,7 +863,6 @@ def full(returns, benchmark=None, rf=0., grayscale=False,
                 benchmark_title = benchmark.name
             elif isinstance(benchmark, pd.DataFrame):
                 benchmark_title = benchmark[benchmark.columns[0]].name
-    print(returns_title)
     
     # prepare timeseries
     returns = _utils.prepare_returns(returns)
