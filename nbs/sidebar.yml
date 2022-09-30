@@ -5,3 +5,6 @@ website:
       - 00_utils.ipynb
       - 01_stats.ipynb
       - 02_core_plots.ipynb
+      - 03_plot_wrappers.ipynb
+      - 04_reports.ipynb
+      - Example_Tearsheet.html
