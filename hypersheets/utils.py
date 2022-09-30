@@ -36,21 +36,21 @@ def ytd(df):
     return df[df.index >= dt.datetime.now(
     ).strftime('%Y-01-01')]
 
-# %% ../nbs/00_utils.ipynb 7
+# %% ../nbs/00_utils.ipynb 6
 def pandas_date(df, dates):
     """Filters a dataframe (with date as the index), to its values on specific days"""
     if not isinstance(dates, list):
         dates = [dates]
     return df[df.index.isin(dates)]
 
-# %% ../nbs/00_utils.ipynb 9
+# %% ../nbs/00_utils.ipynb 8
 def pandas_current_month(df):
     """an alternative method to mtd. remove?"""
     n = dt.datetime.now()
     daterange = pd.date_range(dt.date(n.year, n.month, 1), n)
     return df[df.index.isin(daterange)]
 
-# %% ../nbs/00_utils.ipynb 10
+# %% ../nbs/00_utils.ipynb 9
 def multi_shift(df, shift=3):
     """Get last N rows relative to another row in dataframe of values, with a sorted index"""
     if isinstance(df, pd.Series):
@@ -61,7 +61,7 @@ def multi_shift(df, shift=3):
         dfs[ix + 1].columns = [str(col) for col in dfi.columns + str(ix + 1)]
     return pd.concat(dfs, axis = 1, sort=True)
 
-# %% ../nbs/00_utils.ipynb 12
+# %% ../nbs/00_utils.ipynb 11
 def to_excess_returns(returns:Union['~pd.Series', '~pd.DataFrame'], # Returns
  rf:Union[float, '~pd.Series', '~pd.DataFrame'] , # Risk-Free rate(s)
  nperiods:int=None # Will convert rf to different frequency using deannualize
@@ -82,7 +82,7 @@ def to_excess_returns(returns:Union['~pd.Series', '~pd.DataFrame'], # Returns
 
     return returns - rf
 
-# %% ../nbs/00_utils.ipynb 13
+# %% ../nbs/00_utils.ipynb 12
 def prepare_returns(data, rf=0., nperiods=None):
     """Converts price data into returns + cleanup"""
     data = data.copy()
@@ -111,12 +111,12 @@ def prepare_returns(data, rf=0., nperiods=None):
             return to_excess_returns(data, rf, nperiods)
     return data
 
-# %% ../nbs/00_utils.ipynb 14
+# %% ../nbs/00_utils.ipynb 13
 def to_returns(prices, rf=0.):
     """Calculates the simple arithmetic returns of a price series"""
     return prepare_returns(prices, rf)
 
-# %% ../nbs/00_utils.ipynb 15
+# %% ../nbs/00_utils.ipynb 14
 def to_prices(returns, base=1e5):
     """Converts returns series to price data"""
     returns = returns.copy().fillna(0).replace(
@@ -124,7 +124,7 @@ def to_prices(returns, base=1e5):
 
     return base + base * _stats.compsum(returns)
 
-# %% ../nbs/00_utils.ipynb 18
+# %% ../nbs/00_utils.ipynb 17
 def to_log_returns(returns, rf=0., nperiods=None):
     """Converts returns series to log returns"""
     returns = prepare_returns(returns, rf, nperiods)
@@ -133,12 +133,12 @@ def to_log_returns(returns, rf=0., nperiods=None):
     except Exception:
         return 0.
 
-# %% ../nbs/00_utils.ipynb 20
+# %% ../nbs/00_utils.ipynb 19
 def log_returns(returns, rf=0., nperiods=None):
     """Shorthand for to_log_returns"""
     return to_log_returns(returns, rf, nperiods)
 
-# %% ../nbs/00_utils.ipynb 21
+# %% ../nbs/00_utils.ipynb 20
 def exponential_stdev(returns, window=30, is_halflife=False):
     """Returns series representing exponential volatility of returns"""
     returns = prepare_returns(returns)
@@ -146,7 +146,7 @@ def exponential_stdev(returns, window=30, is_halflife=False):
     return returns.ewm(com=None, span=window,
                        halflife=halflife, min_periods=window).std()
 
-# %% ../nbs/00_utils.ipynb 22
+# %% ../nbs/00_utils.ipynb 21
 def download_prices(ticker, period="max"):
     """download daily adjusted close prices from yahoo"""
     if isinstance(period, pd.DatetimeIndex):
@@ -156,7 +156,7 @@ def download_prices(ticker, period="max"):
 
     return yf.Ticker(ticker).history(**p)['Close']# this is automatically the adjusted value
 
-# %% ../nbs/00_utils.ipynb 24
+# %% ../nbs/00_utils.ipynb 23
 def download_returns(ticker, period="max"):
     """download returns from yahoo"""
     if isinstance(period, pd.DatetimeIndex):
@@ -166,7 +166,7 @@ def download_returns(ticker, period="max"):
 
     return prepare_returns(yf.Ticker(ticker).history(**p)['Close']) # this is automatically the adjusted value
 
-# %% ../nbs/00_utils.ipynb 26
+# %% ../nbs/00_utils.ipynb 25
 def prepare_benchmark(benchmark=None, period="max", rf=0.,
                        prep_returns=True):
     """
@@ -197,7 +197,7 @@ def prepare_benchmark(benchmark=None, period="max", rf=0.,
         return prepare_returns(benchmark.dropna(), rf=rf)
     return benchmark.dropna()
 
-# %% ../nbs/00_utils.ipynb 28
+# %% ../nbs/00_utils.ipynb 27
 def rebase(prices, base=100.):
     """
     Rebase all series to a given intial base.
@@ -208,7 +208,7 @@ def rebase(prices, base=100.):
     """
     return prices.dropna() / prices.dropna().iloc[0] * base
 
-# %% ../nbs/00_utils.ipynb 30
+# %% ../nbs/00_utils.ipynb 29
 def group_returns(returns, groupby, compounded=True):
     """Summarize returns
     group_returns(df, df.index.year)
@@ -218,7 +218,7 @@ def group_returns(returns, groupby, compounded=True):
         return returns.groupby(groupby).apply(_stats.comp)
     return returns.groupby(groupby).sum()
 
-# %% ../nbs/00_utils.ipynb 33
+# %% ../nbs/00_utils.ipynb 32
 def aggregate_returns(returns, period=None, compounded=True):
     """Aggregates returns based on date periods, and flattens index"""
     if period is None or 'day' in period:
@@ -260,7 +260,7 @@ def aggregate_returns(returns, period=None, compounded=True):
 
     return returns
 
-# %% ../nbs/00_utils.ipynb 35
+# %% ../nbs/00_utils.ipynb 34
 def prepare_prices(data, base=1.):
     """Converts return data into prices + cleanup"""
     data = data.copy()
@@ -280,19 +280,19 @@ def prepare_prices(data, base=1.):
 
     return data
 
-# %% ../nbs/00_utils.ipynb 36
+# %% ../nbs/00_utils.ipynb 35
 def round_to_closest(val, res, decimals=None):
     """Round to closest resolution"""
     if decimals is None and "." in str(res):
         decimals = len(str(res).split('.')[1])
     return round(round(val / res) * res, decimals)
 
-# %% ../nbs/00_utils.ipynb 37
+# %% ../nbs/00_utils.ipynb 36
 def file_stream():
     """Returns a file stream"""
     return io.BytesIO()
 
-# %% ../nbs/00_utils.ipynb 38
+# %% ../nbs/00_utils.ipynb 37
 def _in_notebook(matplotlib_inline=False):
     """Identify enviroment (notebook, terminal, etc)"""
     try:
@@ -311,7 +311,7 @@ def _in_notebook(matplotlib_inline=False):
         # Probably standard Python interpreter
         return False
 
-# %% ../nbs/00_utils.ipynb 39
+# %% ../nbs/00_utils.ipynb 38
 def _count_consecutive(data):
     """Counts consecutive data (like cumsum() with reset on zeroes)"""
     def _count(data):
@@ -324,12 +324,12 @@ def _count_consecutive(data):
         return data
     return _count(data)
 
-# %% ../nbs/00_utils.ipynb 40
+# %% ../nbs/00_utils.ipynb 39
 def _score_str(val):
     """Returns + sign for positive values and - for negative values (used in plots)"""
     return ("" if "-" in val else "+") + str(val)
 
-# %% ../nbs/00_utils.ipynb 41
+# %% ../nbs/00_utils.ipynb 40
 def make_index(ticker_weights:(dict), #  A python dict with tickers as keys and weights as values
 rebalance="1M", # Pandas resample interval or None for never
 period:(str)="max", # time period of the returns to be downloaded
@@ -393,7 +393,7 @@ match_dates:(bool)=False # whether to match dates?
     return index[index.index <= last_day].sum(axis=1)
 
 
-# %% ../nbs/00_utils.ipynb 43
+# %% ../nbs/00_utils.ipynb 42
 def make_portfolio(returns, start_balance=1e5,
                    mode="comp", round_to=None):
     """Calculates compounded value of portfolio"""
@@ -424,7 +424,7 @@ def make_portfolio(returns, start_balance=1e5,
 
     return portfolio
 
-# %% ../nbs/00_utils.ipynb 44
+# %% ../nbs/00_utils.ipynb 43
 def _flatten_dataframe(df, set_index=None):
     """Dirty method for flattening multi-index dataframe"""
     s_buf = io.StringIO()

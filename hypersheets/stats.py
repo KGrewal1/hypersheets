@@ -27,17 +27,17 @@ from scipy.stats import (
 
 import hypersheets.utils as _utils
 
-# %% ../nbs/01_stats.ipynb 3
+# %% ../nbs/01_stats.ipynb 4
 def compsum(returns):
     """Calculates cumulative compounded returns up to each day, for series of daily returns"""
     return returns.add(1).cumprod() -1
 
-# %% ../nbs/01_stats.ipynb 5
+# %% ../nbs/01_stats.ipynb 6
 def comp(returns):
     """Calculates total compounded return, for series of daily returns"""
     return returns.add(1).prod() -1
 
-# %% ../nbs/01_stats.ipynb 7
+# %% ../nbs/01_stats.ipynb 8
 def distribution(returns, compounded=True, prepare_returns=False):
     """Show the returns and outlier values based on IQR from a series of returns. Outliers are those more than 1.5 times the IQR from the Q1/Q3"""
     def get_outliers(data):
@@ -75,7 +75,7 @@ def distribution(returns, compounded=True, prepare_returns=False):
         "Yearly": get_outliers(daily.resample('A').apply(apply_fnc))
     }
 
-# %% ../nbs/01_stats.ipynb 9
+# %% ../nbs/01_stats.ipynb 10
 def expected_return(returns, aggregate=None, compounded=True,
                     prepare_returns=True):
     """
@@ -87,7 +87,7 @@ def expected_return(returns, aggregate=None, compounded=True,
     # returns = _utils.aggregate_returns(returns, aggregate, compounded)
     return np.product(1 + returns) ** (1 / len(returns)) - 1
 
-# %% ../nbs/01_stats.ipynb 12
+# %% ../nbs/01_stats.ipynb 13
 def geometric_mean(retruns, aggregate=None, compounded=True):
     """Shorthand for expected_return()"""
     return expected_return(retruns, aggregate, compounded)
@@ -97,31 +97,31 @@ def ghpr(retruns, aggregate=None, compounded=True):
     """Shorthand for expected_return()"""
     return expected_return(retruns, aggregate, compounded)
 
-# %% ../nbs/01_stats.ipynb 13
+# %% ../nbs/01_stats.ipynb 14
 def outliers(returns, quantile=.95):
     """Returns series of outliers: all values greater than the quantile"""
     return returns[returns > returns.quantile(quantile)].dropna(how='all')
 
-# %% ../nbs/01_stats.ipynb 15
+# %% ../nbs/01_stats.ipynb 16
 def remove_outliers(returns, quantile=.95):
     """Returns series of returns without the outliers on the top end"""
     return returns[returns < returns.quantile(quantile)]
 
-# %% ../nbs/01_stats.ipynb 17
+# %% ../nbs/01_stats.ipynb 18
 def best(returns, aggregate=None, compounded=True, prepare_returns=False):
     """Returns the best day/month/week/quarter/year's return"""
     if prepare_returns:
         returns = _utils.prepare_returns(returns)
     return _utils.aggregate_returns(returns, aggregate, compounded).max()
 
-# %% ../nbs/01_stats.ipynb 19
+# %% ../nbs/01_stats.ipynb 20
 def worst(returns, aggregate=None, compounded=True, prepare_returns=False):
     """Returns the worst day/month/week/quarter/year's return"""
     if prepare_returns:
         returns = _utils.prepare_returns(returns)
     return _utils.aggregate_returns(returns, aggregate, compounded).min()
 
-# %% ../nbs/01_stats.ipynb 21
+# %% ../nbs/01_stats.ipynb 22
 def consecutive_wins(returns, aggregate=None, compounded=True,
                      prepare_returns=False):
     """Returns the maximum consecutive wins by day/month/week/quarter/year"""
@@ -130,7 +130,7 @@ def consecutive_wins(returns, aggregate=None, compounded=True,
     returns = _utils.aggregate_returns(returns, aggregate, compounded) > 0
     return _utils._count_consecutive(returns).max()
 
-# %% ../nbs/01_stats.ipynb 23
+# %% ../nbs/01_stats.ipynb 24
 def consecutive_losses(returns, aggregate=None, compounded=True,
                        prepare_returns=False):
     """
@@ -142,13 +142,13 @@ def consecutive_losses(returns, aggregate=None, compounded=True,
     returns = _utils.aggregate_returns(returns, aggregate, compounded) < 0
     return _utils._count_consecutive(returns).max()
 
-# %% ../nbs/01_stats.ipynb 25
+# %% ../nbs/01_stats.ipynb 26
 def _exposure(ret):
     """Internal method for exposure"""
     ex = len(ret[(~np.isnan(ret)) & (ret != 0)]) / len(ret)
     return ceil(ex * 100) / 100
 
-# %% ../nbs/01_stats.ipynb 26
+# %% ../nbs/01_stats.ipynb 27
 def exposure(returns, prepare_returns=False):
     """Returns the market exposure time (returns != 0)"""
     if prepare_returns:
@@ -161,7 +161,7 @@ def exposure(returns, prepare_returns=False):
     ex = len(returns[(~np.isnan(returns)) & (returns != 0)]) /len(returns)
     return ceil(ex * 100) / 100 
 
-# %% ../nbs/01_stats.ipynb 28
+# %% ../nbs/01_stats.ipynb 29
 #| echo: false
 def _win_rate(series):
     """Internal method for win_rate"""
@@ -170,7 +170,7 @@ def _win_rate(series):
     except Exception:
         return 0.
 
-# %% ../nbs/01_stats.ipynb 29
+# %% ../nbs/01_stats.ipynb 30
 def win_rate(returns, aggregate=None, compounded=True, prepare_returns=False):
     """Calculates the win ratio for a period: (number of winning days)/(number of days in market)"""
 
@@ -188,7 +188,7 @@ def win_rate(returns, aggregate=None, compounded=True, prepare_returns=False):
 
     return _win_rate(returns)
 
-# %% ../nbs/01_stats.ipynb 31
+# %% ../nbs/01_stats.ipynb 32
 def avg_return(returns, aggregate=None, compounded=True, prepare_returns=False):
     """Calculates the average return/trade return for a period"""
     if prepare_returns:
@@ -198,7 +198,7 @@ def avg_return(returns, aggregate=None, compounded=True, prepare_returns=False):
     return returns[returns != 0].dropna().mean()
 
 
-# %% ../nbs/01_stats.ipynb 33
+# %% ../nbs/01_stats.ipynb 34
 def avg_win(returns, aggregate=None, compounded=True, prepare_returns=False):
     """
     Calculates the average winning
@@ -210,7 +210,7 @@ def avg_win(returns, aggregate=None, compounded=True, prepare_returns=False):
         returns = _utils.aggregate_returns(returns, aggregate, compounded)
     return returns[returns > 0].dropna().mean()
 
-# %% ../nbs/01_stats.ipynb 35
+# %% ../nbs/01_stats.ipynb 36
 def avg_loss(returns, aggregate=None, compounded=True, prepare_returns=False):
     """
     Calculates the average low if
@@ -222,7 +222,7 @@ def avg_loss(returns, aggregate=None, compounded=True, prepare_returns=False):
         returns = _utils.aggregate_returns(returns, aggregate, compounded)
     return returns[returns < 0].dropna().mean()
 
-# %% ../nbs/01_stats.ipynb 37
+# %% ../nbs/01_stats.ipynb 38
 def volatility(returns, periods=252, annualize=True, prepare_returns=False):
     """Calculates the volatility of returns for a period"""
     if prepare_returns:
@@ -233,7 +233,7 @@ def volatility(returns, periods=252, annualize=True, prepare_returns=False):
 
     return std
 
-# %% ../nbs/01_stats.ipynb 40
+# %% ../nbs/01_stats.ipynb 41
 def rolling_volatility(returns, rolling_period=126, periods_per_year=252,
                        prepare_returns=False):
     """Create time series of rolling volatility"""
@@ -242,7 +242,7 @@ def rolling_volatility(returns, rolling_period=126, periods_per_year=252,
 
     return returns.rolling(rolling_period).std() * np.sqrt(periods_per_year)
 
-# %% ../nbs/01_stats.ipynb 42
+# %% ../nbs/01_stats.ipynb 43
 def implied_volatility(returns, periods=252, annualize=False):
     """Calculates the implied volatility of returns for a period"""
     logret = _utils.to_log_returns(returns)
@@ -251,7 +251,7 @@ def implied_volatility(returns, periods=252, annualize=False):
     return logret.std()
 
 
-# %% ../nbs/01_stats.ipynb 45
+# %% ../nbs/01_stats.ipynb 46
 def autocorr_penalty(returns, prepare_returns=False):
     """Metric to account for auto correlation"""
     if prepare_returns:
@@ -268,7 +268,7 @@ def autocorr_penalty(returns, prepare_returns=False):
     corr = [((num - x)/num) * coef ** x for x in range(1, num)]
     return np.sqrt(1 + 2 * np.sum(corr))
 
-# %% ../nbs/01_stats.ipynb 47
+# %% ../nbs/01_stats.ipynb 48
 def sharpe(returns, rf=0., periods=252, annualize=True, smart=False, prepare_returns=False):
     """
     Calculates the sharpe ratio of access returns
@@ -299,12 +299,12 @@ def sharpe(returns, rf=0., periods=252, annualize=True, smart=False, prepare_ret
 
     return res
 
-# %% ../nbs/01_stats.ipynb 49
+# %% ../nbs/01_stats.ipynb 50
 def smart_sharpe(returns, rf=0., periods=252, annualize=True):
     """Sharpe ratio, penalised with autocorrelation penalty"""
     return sharpe(returns, rf, periods, annualize, True)
 
-# %% ../nbs/01_stats.ipynb 51
+# %% ../nbs/01_stats.ipynb 52
 def rolling_sharpe(returns, rf=0., rolling_period=126,
                    annualize=True, periods_per_year=252,
                    prepare_returns=False):
@@ -327,7 +327,7 @@ def rolling_sharpe(returns, rf=0., rolling_period=126,
 
     return res
 
-# %% ../nbs/01_stats.ipynb 53
+# %% ../nbs/01_stats.ipynb 54
 def sortino(returns, rf=0, periods=252, annualize=True, smart=False,
                    prepare_returns=False):
     """
@@ -359,12 +359,12 @@ def sortino(returns, rf=0, periods=252, annualize=True, smart=False,
 
     return res
 
-# %% ../nbs/01_stats.ipynb 56
+# %% ../nbs/01_stats.ipynb 57
 def smart_sortino(returns, rf=0, periods=252, annualize=True):
     """Calculates Smart Sortino ratio, adding an autocorrelation penalty"""
     return sortino(returns, rf, periods, annualize, True)
 
-# %% ../nbs/01_stats.ipynb 61
+# %% ../nbs/01_stats.ipynb 62
 def rolling_sortino(returns, rf=0, rolling_period=126, annualize=True,
                     periods_per_year=252, **kwargs):
     if rf != 0 and rolling_period is None:
@@ -384,7 +384,7 @@ def rolling_sortino(returns, rf=0, rolling_period=126, annualize=True,
             1 if periods_per_year is None else periods_per_year)
     return res
 
-# %% ../nbs/01_stats.ipynb 63
+# %% ../nbs/01_stats.ipynb 64
 def skew(returns, prepare_returns=False):
     """
     Calculates returns' skewness
@@ -394,7 +394,7 @@ def skew(returns, prepare_returns=False):
         returns = _utils.prepare_returns(returns)
     return returns.skew()
 
-# %% ../nbs/01_stats.ipynb 66
+# %% ../nbs/01_stats.ipynb 67
 def kurtosis(returns, prepare_returns=False):
     """
     Calculates returns' kurtosis
@@ -404,7 +404,7 @@ def kurtosis(returns, prepare_returns=False):
         returns = _utils.prepare_returns(returns)
     return returns.kurtosis()
 
-# %% ../nbs/01_stats.ipynb 70
+# %% ../nbs/01_stats.ipynb 71
 # check logic for this
 def probabilistic_ratio(series, rf=0., base="sharpe", periods=252, annualize=False, smart=False):
 
@@ -434,25 +434,25 @@ def probabilistic_ratio(series, rf=0., base="sharpe", periods=252, annualize=Fal
     return psr
 
 
-# %% ../nbs/01_stats.ipynb 71
+# %% ../nbs/01_stats.ipynb 72
 def probabilistic_sharpe_ratio(series, rf=0., periods=252, annualize=False, smart=False):
     """The probabilistic Sharpe Ratio"""
     return probabilistic_ratio(series, rf, base="sharpe", periods=periods,
                                annualize=annualize, smart=smart)
 
-# %% ../nbs/01_stats.ipynb 73
+# %% ../nbs/01_stats.ipynb 74
 def probabilistic_sortino_ratio(series, rf=0., periods=252, annualize=False, smart=False):
     """The probabilistic Sortino Ratio"""
     return probabilistic_ratio(series, rf, base="sortino", periods=periods,
                                annualize=annualize, smart=smart)
 
-# %% ../nbs/01_stats.ipynb 75
+# %% ../nbs/01_stats.ipynb 76
 def probabilistic_adjusted_sortino_ratio(series, rf=0., periods=252, annualize=False, smart=False):
     """The probabilistic adj. Sortino Ratio"""
     return probabilistic_ratio(series, rf, base="adjusted_sortino", periods=periods,
                                annualize=annualize, smart=smart)
 
-# %% ../nbs/01_stats.ipynb 77
+# %% ../nbs/01_stats.ipynb 78
 def omega(returns, rf=0.0, required_return=0.0, periods=252, **kwargs):
     """
     Determines the Omega ratio of a strategy.
@@ -485,7 +485,7 @@ def omega(returns, rf=0.0, required_return=0.0, periods=252, **kwargs):
     return np.nan
 
 
-# %% ../nbs/01_stats.ipynb 80
+# %% ../nbs/01_stats.ipynb 81
 def gain_to_pain_ratio(returns, rf=0, resolution="D", **kwargs):
     """
     Jack Schwager's GPR. See here for more info:
@@ -498,7 +498,7 @@ def gain_to_pain_ratio(returns, rf=0, resolution="D", **kwargs):
     return returns.sum() / downside
 
 
-# %% ../nbs/01_stats.ipynb 83
+# %% ../nbs/01_stats.ipynb 84
 def cagr(returns, rf=0., compounded=True, **kwargs):
     """
     Calculates the communicative annualized growth return
@@ -524,7 +524,7 @@ def cagr(returns, rf=0., compounded=True, **kwargs):
 
     return res
 
-# %% ../nbs/01_stats.ipynb 86
+# %% ../nbs/01_stats.ipynb 87
 def rar(returns, rf=0., **kwargs):
     """
     Calculates the risk-adjusted return of access returns
@@ -536,20 +536,20 @@ def rar(returns, rf=0., **kwargs):
         returns = _utils.prepare_returns(returns, rf)
     return cagr(returns) / exposure(returns)
 
-# %% ../nbs/01_stats.ipynb 89
+# %% ../nbs/01_stats.ipynb 90
 def max_drawdown(returns):
     """Calculates the maximum drawdown"""
     prices = _utils.prepare_prices(returns) # convert returns to prices
     return (prices / prices.expanding(min_periods=0).max()).min() - 1
 
-# %% ../nbs/01_stats.ipynb 91
+# %% ../nbs/01_stats.ipynb 92
 def to_drawdown_series(returns):
     """Convert returns series to drawdown series"""
     prices = _utils.prepare_prices(returns) # convert returns to prices
     dd = prices / np.maximum.accumulate(prices) - 1.
     return dd.replace([np.inf, -np.inf, -0], 0)
 
-# %% ../nbs/01_stats.ipynb 93
+# %% ../nbs/01_stats.ipynb 94
 def calmar(returns, prepare_returns=False):
     """Calculates the calmar ratio (CAGR% / MaxDD%)"""
     if prepare_returns:
@@ -558,13 +558,13 @@ def calmar(returns, prepare_returns=False):
     max_dd = max_drawdown(returns)
     return cagr_ratio / abs(max_dd)
 
-# %% ../nbs/01_stats.ipynb 95
+# %% ../nbs/01_stats.ipynb 96
 def ulcer_index(returns):
     """Calculates the ulcer index score (downside risk measurment)"""
     dd = to_drawdown_series(returns)
     return np.sqrt(np.divide((dd**2).sum(), returns.shape[0] - 1))
 
-# %% ../nbs/01_stats.ipynb 98
+# %% ../nbs/01_stats.ipynb 99
 def ulcer_performance_index(returns, rf=0):
     """
     Calculates the ulcer index score
@@ -572,12 +572,12 @@ def ulcer_performance_index(returns, rf=0):
     """
     return (comp(returns)-rf) / ulcer_index(returns)
 
-# %% ../nbs/01_stats.ipynb 100
+# %% ../nbs/01_stats.ipynb 101
 def upi(returns, rf=0):
     """Shorthand for ulcer_performance_index()"""
     return ulcer_performance_index(returns, rf)
 
-# %% ../nbs/01_stats.ipynb 101
+# %% ../nbs/01_stats.ipynb 102
 def risk_of_ruin(returns, prepare_returns=False):
     """
     Calculates the risk of ruin
@@ -588,12 +588,12 @@ def risk_of_ruin(returns, prepare_returns=False):
     wins = win_rate(returns)
     return ((1 - wins) / (1 + wins)) ** len(returns)
 
-# %% ../nbs/01_stats.ipynb 104
+# %% ../nbs/01_stats.ipynb 105
 def ror(returns):
     """Shorthand for risk_of_ruin()"""
     return risk_of_ruin(returns)
 
-# %% ../nbs/01_stats.ipynb 105
+# %% ../nbs/01_stats.ipynb 106
 def value_at_risk(returns, sigma=1, confidence=0.95, prepare_returns=False):
     """
     Calculats the daily value-at-risk
@@ -609,12 +609,12 @@ def value_at_risk(returns, sigma=1, confidence=0.95, prepare_returns=False):
 
     return norm.ppf(1-confidence, mu, sigma)
 
-# %% ../nbs/01_stats.ipynb 108
+# %% ../nbs/01_stats.ipynb 109
 def var(returns, sigma=1, confidence=0.95, prepare_returns=False):
     """Shorthand for value_at_risk()"""
     return value_at_risk(returns, sigma, confidence, prepare_returns)
 
-# %% ../nbs/01_stats.ipynb 109
+# %% ../nbs/01_stats.ipynb 110
 def conditional_value_at_risk(returns, sigma=1, confidence=0.95,
                               prepare_returns=False):
     """
@@ -627,18 +627,18 @@ def conditional_value_at_risk(returns, sigma=1, confidence=0.95,
     c_var = returns[returns < var].values.mean()
     return c_var if ~np.isnan(c_var) else var
 
-# %% ../nbs/01_stats.ipynb 111
+# %% ../nbs/01_stats.ipynb 112
 def cvar(returns, sigma=1, confidence=0.95, prepare_returns=False):
     """Shorthand for conditional_value_at_risk()"""
     return conditional_value_at_risk(
         returns, sigma, confidence, prepare_returns)
 
-# %% ../nbs/01_stats.ipynb 112
+# %% ../nbs/01_stats.ipynb 113
 def expected_shortfall(returns, sigma=1, confidence=0.95, prepare_returns=False):
     """Shorthand for conditional_value_at_risk()"""
     return conditional_value_at_risk(returns, sigma, confidence)
 
-# %% ../nbs/01_stats.ipynb 113
+# %% ../nbs/01_stats.ipynb 114
 def serenity_index(returns, rf=0):
     """
     Calculates the serenity index score
@@ -648,7 +648,7 @@ def serenity_index(returns, rf=0):
     pitfall = - cvar(dd) / returns.std()
     return (comp(returns)-rf) / (ulcer_index(returns) * pitfall)
 
-# %% ../nbs/01_stats.ipynb 115
+# %% ../nbs/01_stats.ipynb 116
 def tail_ratio(returns, cutoff=0.95, prepare_returns=False):
     """
     Measures the ratio between the right
@@ -658,7 +658,7 @@ def tail_ratio(returns, cutoff=0.95, prepare_returns=False):
         returns = _utils.prepare_returns(returns)
     return abs(returns.quantile(cutoff) / returns.quantile(1-cutoff))
 
-# %% ../nbs/01_stats.ipynb 117
+# %% ../nbs/01_stats.ipynb 118
 def payoff_ratio(returns, prepare_returns=False):
     """Measures the payoff ratio (average win/average loss)"""
     if prepare_returns:
@@ -666,12 +666,12 @@ def payoff_ratio(returns, prepare_returns=False):
     return avg_win(returns) / abs(avg_loss(returns))
 
 
-# %% ../nbs/01_stats.ipynb 120
+# %% ../nbs/01_stats.ipynb 121
 def win_loss_ratio(returns, prepare_returns=False):
     """Shorthand for payoff_ratio()"""
     return payoff_ratio(returns, prepare_returns)
 
-# %% ../nbs/01_stats.ipynb 121
+# %% ../nbs/01_stats.ipynb 122
 def profit_ratio(returns, prepare_returns=False):
     """Measures the profit ratio (win ratio / loss ratio)"""
     if prepare_returns:
@@ -686,14 +686,14 @@ def profit_ratio(returns, prepare_returns=False):
     except Exception:
         return 0.
 
-# %% ../nbs/01_stats.ipynb 123
+# %% ../nbs/01_stats.ipynb 124
 def profit_factor(returns, prepare_returns=False):
     """Measures the profit ratio (wins/loss)"""
     if prepare_returns:
         returns = _utils.prepare_returns(returns)
     return abs(returns[returns >= 0].sum() / returns[returns < 0].sum())
 
-# %% ../nbs/01_stats.ipynb 125
+# %% ../nbs/01_stats.ipynb 126
 def cpc_index(returns, prepare_returns=False):
     """
     Measures the cpc ratio
@@ -703,14 +703,14 @@ def cpc_index(returns, prepare_returns=False):
         returns = _utils.prepare_returns(returns)
     return profit_factor(returns) * win_rate(returns) * win_loss_ratio(returns)
 
-# %% ../nbs/01_stats.ipynb 127
+# %% ../nbs/01_stats.ipynb 128
 def common_sense_ratio(returns, prepare_returns=False):
     """Measures the common sense ratio (profit factor * tail ratio)"""
     if prepare_returns:
         returns = _utils.prepare_returns(returns)
     return profit_factor(returns) * tail_ratio(returns)
 
-# %% ../nbs/01_stats.ipynb 129
+# %% ../nbs/01_stats.ipynb 130
 def outlier_win_ratio(returns, quantile=.99, prepare_returns=False):
     """
     Calculates the outlier winners ratio
@@ -720,7 +720,7 @@ def outlier_win_ratio(returns, quantile=.99, prepare_returns=False):
         returns = _utils.prepare_returns(returns)
     return returns.quantile(quantile).mean() / returns[returns >= 0].mean()
 
-# %% ../nbs/01_stats.ipynb 131
+# %% ../nbs/01_stats.ipynb 132
 def outlier_loss_ratio(returns, quantile=.01, prepare_returns=False):
     """
     Calculates the outlier losers ratio
@@ -730,7 +730,7 @@ def outlier_loss_ratio(returns, quantile=.01, prepare_returns=False):
         returns = _utils.prepare_returns(returns)
     return returns.quantile(quantile).mean() / returns[returns < 0].mean()
 
-# %% ../nbs/01_stats.ipynb 133
+# %% ../nbs/01_stats.ipynb 134
 def recovery_factor(returns, prepare_returns=False):
     """Measures how fast the strategy recovers from drawdowns"""
     if prepare_returns:
@@ -739,7 +739,7 @@ def recovery_factor(returns, prepare_returns=False):
     max_dd = max_drawdown(returns)
     return total_returns / abs(max_dd)
 
-# %% ../nbs/01_stats.ipynb 135
+# %% ../nbs/01_stats.ipynb 136
 def risk_return_ratio(returns, prepare_returns=True):
     """
     Calculates the return / risk ratio
@@ -749,7 +749,7 @@ def risk_return_ratio(returns, prepare_returns=True):
         returns = _utils.prepare_returns(returns)
     return returns.mean() / returns.std()
 
-# %% ../nbs/01_stats.ipynb 137
+# %% ../nbs/01_stats.ipynb 138
 #| echo: false
 def _drawdown_details(drawdown):
     """Internals for drawdown details"""
@@ -801,7 +801,7 @@ def _drawdown_details(drawdown):
 
     return df
 
-# %% ../nbs/01_stats.ipynb 138
+# %% ../nbs/01_stats.ipynb 139
 def drawdown_details(drawdown):
     """
     Calculates drawdown details, including start/end/valley dates,
@@ -817,7 +817,7 @@ def drawdown_details(drawdown):
 
     return _drawdown_details(drawdown)
 
-# %% ../nbs/01_stats.ipynb 140
+# %% ../nbs/01_stats.ipynb 141
 def kelly_criterion(returns, prepare_returns=False):
     """
     Calculates the recommended maximum amount of capital that
@@ -832,7 +832,7 @@ def kelly_criterion(returns, prepare_returns=False):
 
     return ((win_loss_ratio * win_prob) - lose_prob) / win_loss_ratio
 
-# %% ../nbs/01_stats.ipynb 143
+# %% ../nbs/01_stats.ipynb 144
 def r_squared(returns, benchmark, prepare_returns=True):
     """Measures the straight line fit of the equity curve"""
     # slope, intercept, r_val, p_val, std_err = _linregress(
@@ -842,12 +842,12 @@ def r_squared(returns, benchmark, prepare_returns=True):
         returns, _utils.prepare_benchmark(benchmark, returns.index))
     return r_val**2
 
-# %% ../nbs/01_stats.ipynb 145
+# %% ../nbs/01_stats.ipynb 146
 def r2(returns, benchmark):
     """Shorthand for r_squared()"""
     return r_squared(returns, benchmark)
 
-# %% ../nbs/01_stats.ipynb 146
+# %% ../nbs/01_stats.ipynb 147
 def information_ratio(returns, benchmark, prepare_returns=True):
     """
     Calculates the information ratio
@@ -859,7 +859,7 @@ def information_ratio(returns, benchmark, prepare_returns=True):
 
     return diff_rets.mean() / diff_rets.std()
 
-# %% ../nbs/01_stats.ipynb 148
+# %% ../nbs/01_stats.ipynb 149
 def greeks(returns, benchmark, periods=252., prepare_returns=True):
     """Calculates alpha and beta of the portfolio"""
     # ----------------------------
@@ -883,7 +883,7 @@ def greeks(returns, benchmark, periods=252., prepare_returns=True):
         # "vol": _np.sqrt(matrix[0, 0]) * _np.sqrt(periods)
     }).fillna(0)
 
-# %% ../nbs/01_stats.ipynb 150
+# %% ../nbs/01_stats.ipynb 151
 def rolling_greeks(returns, benchmark, periods=252, prepare_returns=True):
     """Calculates rolling alpha and beta of the portfolio"""
     if prepare_returns:
@@ -905,7 +905,7 @@ def rolling_greeks(returns, benchmark, periods=252, prepare_returns=True):
         "alpha": alpha
     })
 
-# %% ../nbs/01_stats.ipynb 152
+# %% ../nbs/01_stats.ipynb 153
 def treynor_ratio(returns, benchmark, periods=252., rf=0., prepare_returns=True):
     """
     Calculates the Treynor ratio
@@ -924,7 +924,7 @@ def treynor_ratio(returns, benchmark, periods=252., rf=0., prepare_returns=True)
         return 0
     return (comp(returns) - rf) / beta
 
-# %% ../nbs/01_stats.ipynb 154
+# %% ../nbs/01_stats.ipynb 155
 def compare(returns, benchmark, aggregate=None, compounded=True,
             round_vals=None, prepare_returns=True):
     """
@@ -950,7 +950,7 @@ def compare(returns, benchmark, aggregate=None, compounded=True,
 
     return data
 
-# %% ../nbs/01_stats.ipynb 157
+# %% ../nbs/01_stats.ipynb 158
 def monthly_returns(returns, eoy=True, compounded=True, prepare_returns=True):
     """Calculates monthly returns"""
     if isinstance(returns, pd.DataFrame):

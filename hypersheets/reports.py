@@ -148,7 +148,6 @@ def metrics(returns, benchmark=None, rf=0., display=True,
             match_dates=False, **kwargs):
 
     win_year, _ = _get_trading_periods(periods_per_year)
-#| export#| export
     benchmark_title  = 'Benchmark'
     
     if benchmark is not None:
@@ -242,10 +241,10 @@ def metrics(returns, benchmark=None, rf=0., display=True,
         metrics['Smart Sortino'] = _stats.smart_sortino(df, rf, win_year, True)
         # metrics['Prob. Smart Sortino Ratio %'] = _stats.probabilistic_sortino_ratio(df, rf, win_year, False, True) * pct
 
-    metrics['Sortino/sqrt2'] = metrics['Sortino'] / sqrt(2)
+    metrics['Sortino/$\sqrt{2}$'] = metrics['Sortino'] / sqrt(2)
     if mode.lower() == 'full':
         # metrics['Prob. Sortino/sqrt2 Ratio %'] = _stats.probabilistic_adjusted_sortino_ratio(df, rf, win_year, False) * pct
-        metrics['Smart Sortino/sqrt2'] = metrics['Smart Sortino'] / sqrt(2)
+        metrics['Smart Sortino/$\sqrt{2}$'] = metrics['Smart Sortino'] / sqrt(2)
         # metrics['Prob. Smart Sortino/ sqrt(2) Ratio %'] = _stats.probabilistic_adjusted_sortino_ratio(df, rf, win_year, False, True) * pct
     metrics['Omega'] = _stats.omega(df, rf, 0., win_year)
 
@@ -438,10 +437,28 @@ def metrics(returns, benchmark=None, rf=0., display=True,
     return metrics
 
 
-# %% ../nbs/04_reports.ipynb 13
+# %% ../nbs/04_reports.ipynb 14
 def plots(returns, benchmark=None, grayscale=False,
           figsize=(8, 5), mode='basic', compounded=True,
-          periods_per_year=252, prepare_returns=True, match_dates=False):
+          periods_per_year=252, prepare_returns=True, match_dates=False
+          , **kwargs):
+
+    benchmark_title  = 'Benchmark'
+    
+    if benchmark is not None:
+        if isinstance(benchmark, str):
+            benchmark_title  = f'Benchmark ({benchmark.upper()})'
+        elif isinstance(benchmark, pd.DataFrame) and len(benchmark.columns) > 1:
+            raise ValueError("`benchmark` must be a pandas Series, "
+                             "but a multi-column DataFrame was passed")
+            
+    if kwargs.get('benchmark_title') is not None:
+        benchmark_title = kwargs.get('benchmark_title')
+    
+    
+    returns_title = 'Strategy'
+    if kwargs.get('returns_title') is not None:
+        returns_title = kwargs.get('returns_title')
 
     win_year, win_half_year = _get_trading_periods(periods_per_year)
 
@@ -468,17 +485,20 @@ def plots(returns, benchmark=None, grayscale=False,
 
     _plots.returns(returns, benchmark, grayscale=grayscale,
                    figsize=(figsize[0], figsize[0]*.6),
+                   returns_label=returns_title, benchmark_label=benchmark_title,
                    show=True, ylabel=False,
                    prepare_returns=False)
 
     _plots.log_returns(returns, benchmark, grayscale=grayscale,
                        figsize=(figsize[0], figsize[0]*.5),
+                       returns_label=returns_title, benchmark_label=benchmark_title,
                        show=True, ylabel=False,
                        prepare_returns=False)
 
     if benchmark is not None:
         _plots.returns(returns, benchmark, match_volatility=True,
                        grayscale=grayscale,
+                       returns_label=returns_title, benchmark_label=benchmark_title,
                        figsize=(figsize[0], figsize[0]*.5),
                        show=True, ylabel=False,
                        prepare_returns=False)
@@ -486,6 +506,7 @@ def plots(returns, benchmark=None, grayscale=False,
     _plots.yearly_returns(returns, benchmark,
                           grayscale=grayscale,
                           figsize=(figsize[0], figsize[0]*.5),
+                          returns_label=returns_title, benchmark_label=benchmark_title,
                           show=True, ylabel=False,
                           prepare_returns=False)
 
@@ -501,6 +522,7 @@ def plots(returns, benchmark=None, grayscale=False,
 
     if benchmark is not None:
         _plots.rolling_beta(returns, benchmark, grayscale=grayscale,
+                            benchmark_label=benchmark_title,
                             window1=win_half_year, window2=win_year,
                             figsize=(figsize[0], figsize[0]*.3),
                             show=True, ylabel=False,
@@ -509,13 +531,16 @@ def plots(returns, benchmark=None, grayscale=False,
     _plots.rolling_volatility(
         returns, benchmark, grayscale=grayscale,
         figsize=(figsize[0], figsize[0]*.3), show=True, ylabel=False,
+        returns_label=returns_title, benchmark_label=benchmark_title,
         period=win_half_year)
 
     _plots.rolling_sharpe(returns, grayscale=grayscale,
+                          returns_label=returns_title,
                           figsize=(figsize[0], figsize[0]*.3),
                           show=True, ylabel=False, period=win_half_year)
 
     _plots.rolling_sortino(returns, grayscale=grayscale,
+                           returns_label=returns_title,
                            figsize=(figsize[0], figsize[0]*.3),
                            show=True, ylabel=False, period=win_half_year)
 
@@ -537,7 +562,7 @@ def plots(returns, benchmark=None, grayscale=False,
                         show=True, ylabel=False,
                         prepare_returns=False)
 
-# %% ../nbs/04_reports.ipynb 14
+# %% ../nbs/04_reports.ipynb 16
 def html(returns, benchmark=None, rf=0., grayscale=False,
          title='Strategy Tearsheet', output=None, compounded=True,
          periods_per_year=252, download_filename='quantstats-tearsheet.html',
@@ -809,7 +834,7 @@ def html(returns, benchmark=None, rf=0., grayscale=False,
     with open(download_filename, 'w', encoding='utf-8') as f:
         f.write(tpl)
 
-# %% ../nbs/04_reports.ipynb 16
+# %% ../nbs/04_reports.ipynb 18
 def full(returns, benchmark=None, rf=0., grayscale=False,
          figsize=(8, 5), display=True, compounded=True,
          periods_per_year=252, match_dates=False, **kwargs):
@@ -827,8 +852,7 @@ def full(returns, benchmark=None, rf=0., grayscale=False,
     if kwargs.get('returns_title') is not None:
         returns_title = kwargs.get('returns_title')
 
-    # prepare timeseries
-    returns = _utils.prepare_returns(returns)
+    
 
     if benchmark is not None:
         benchmark_title = kwargs.get('benchmark_title', 'Benchmark')
@@ -839,6 +863,10 @@ def full(returns, benchmark=None, rf=0., grayscale=False,
                 benchmark_title = benchmark.name
             elif isinstance(benchmark, pd.DataFrame):
                 benchmark_title = benchmark[benchmark.columns[0]].name
+    print(returns_title)
+    
+    # prepare timeseries
+    returns = _utils.prepare_returns(returns)
 
 
 
@@ -861,6 +889,7 @@ def full(returns, benchmark=None, rf=0., grayscale=False,
     if _utils._in_notebook():
         iDisplay(iHTML('<h4>Performance Metrics</h4>'))
         iDisplay(metrics(returns=returns, benchmark=benchmark,
+                        returns_title=returns_title, benchmark_title=benchmark_title,
                          rf=rf, display=display, mode='full',
                          compounded=compounded,
                          periods_per_year=periods_per_year,
@@ -875,6 +904,7 @@ def full(returns, benchmark=None, rf=0., grayscale=False,
     else:
         print('[Performance Metrics]\n')
         metrics(returns=returns, benchmark=benchmark,
+                returns_title=returns_title, benchmark_title=benchmark_title,
                 rf=rf, display=display, mode='full',
                 compounded=compounded,
                 periods_per_year=periods_per_year,
@@ -890,13 +920,39 @@ def full(returns, benchmark=None, rf=0., grayscale=False,
         print('[Strategy Visualization]\nvia Matplotlib')
 
     plots(returns=returns, benchmark=benchmark,
+          returns_title=returns_title, benchmark_title=benchmark_title,
           grayscale=grayscale, figsize=figsize, mode='full',
           periods_per_year=periods_per_year, prepare_returns=False)
 
-# %% ../nbs/04_reports.ipynb 18
+# %% ../nbs/04_reports.ipynb 20
 def basic(returns, benchmark=None, rf=0., grayscale=False,
           figsize=(8, 5), display=True, compounded=True,
-          periods_per_year=252, match_dates=False):
+          periods_per_year=252, match_dates=False, **kwargs):
+
+    # get titles
+    returns_title = 'Strategy'
+    # get title for returns: 
+    
+    if isinstance(returns, str):
+        returns_title = returns
+    elif isinstance(returns, pd.Series):
+        returns_title = returns.name
+    elif isinstance(returns, pd.DataFrame):
+        returns_title = returns[returns.columns[0]].name
+    if kwargs.get('returns_title') is not None:
+        returns_title = kwargs.get('returns_title')
+
+    
+
+    if benchmark is not None:
+        benchmark_title = kwargs.get('benchmark_title', 'Benchmark')
+        if kwargs.get('benchmark_title') is None:
+            if isinstance(benchmark, str):
+                benchmark_title = benchmark
+            elif isinstance(benchmark, pd.Series):
+                benchmark_title = benchmark.name
+            elif isinstance(benchmark, pd.DataFrame):
+                benchmark_title = benchmark[benchmark.columns[0]].name
 
     # prepare timeseries
     returns = _utils.prepare_returns(returns)
@@ -908,6 +964,7 @@ def basic(returns, benchmark=None, rf=0., grayscale=False,
     if _utils._in_notebook():
         iDisplay(iHTML('<h4>Performance Metrics</h4>'))
         metrics(returns=returns, benchmark=benchmark,
+                returns_title=returns_title, benchmark_title=benchmark_title,
                 rf=rf, display=display, mode='basic',
                 compounded=compounded,
                 periods_per_year=periods_per_year,
@@ -916,6 +973,7 @@ def basic(returns, benchmark=None, rf=0., grayscale=False,
     else:
         print('[Performance Metrics]\n')
         metrics(returns=returns, benchmark=benchmark,
+                returns_title=returns_title, benchmark_title=benchmark_title,
                 rf=rf, display=display, mode='basic',
                 compounded=compounded,
                 periods_per_year=periods_per_year,
