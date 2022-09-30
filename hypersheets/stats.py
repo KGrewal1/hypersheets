@@ -247,7 +247,7 @@ def implied_volatility(returns, periods=252, annualize=False):
     """Calculates the implied volatility of returns for a period"""
     logret = _utils.to_log_returns(returns)
     if annualize:
-        return logret.rolling(periods).std() * _np.sqrt(periods)
+        return logret.rolling(periods).std() * np.sqrt(periods)
     return logret.std()
 
 
