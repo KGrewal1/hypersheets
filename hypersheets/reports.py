@@ -30,17 +30,17 @@ except ImportError:
 
 
 
-# %% ../nbs/04_reports.ipynb 4
+# %% ../nbs/04_reports.ipynb 5
 #| echo: false
 # path to location of default report template
 std_path = hypersheets.__path__[0]+ '/report.html' 
 
-# %% ../nbs/04_reports.ipynb 5
+# %% ../nbs/04_reports.ipynb 6
 def _get_trading_periods(periods_per_year=252):
     half_year = ceil(periods_per_year/2)
     return periods_per_year, half_year
 
-# %% ../nbs/04_reports.ipynb 6
+# %% ../nbs/04_reports.ipynb 7
 def _match_dates(returns, benchmark):
     returns = returns.loc[
         max(returns.ne(0).idxmax(), benchmark.ne(0).idxmax()):]
@@ -49,7 +49,7 @@ def _match_dates(returns, benchmark):
 
     return returns, benchmark
 
-# %% ../nbs/04_reports.ipynb 7
+# %% ../nbs/04_reports.ipynb 8
 def _html_table(obj, showindex="default"):
     obj = tabulate(obj, headers="keys", tablefmt='html',
                     floatfmt=".2f", showindex=showindex)
@@ -62,7 +62,7 @@ def _html_table(obj, showindex="default"):
     obj = regex.sub(' +</th>', '</th>', obj)
     return obj
 
-# %% ../nbs/04_reports.ipynb 8
+# %% ../nbs/04_reports.ipynb 9
 def _download_html(html, filename="quantstats-tearsheet.html"):
     jscode = regex.sub(' +', ' ', """<script>
     var bl=new Blob(['{{html}}'],{type:"text/html"});
@@ -77,7 +77,7 @@ def _download_html(html, filename="quantstats-tearsheet.html"):
     if _utils._in_notebook():
         iDisplay(iHTML(jscode.replace('{{filename}}', filename)))
 
-# %% ../nbs/04_reports.ipynb 9
+# %% ../nbs/04_reports.ipynb 10
 def _open_html(html):
     jscode = regex.sub(' +', ' ', """<script>
     var win=window.open();win.document.body.innerHTML='{{html}}';
@@ -87,7 +87,7 @@ def _open_html(html):
     if _utils._in_notebook():
         iDisplay(iHTML(jscode))
 
-# %% ../nbs/04_reports.ipynb 10
+# %% ../nbs/04_reports.ipynb 11
 def _embed_figure(figfile, figfmt):
     figbytes = figfile.getvalue()
     if figfmt == 'svg':
@@ -96,7 +96,7 @@ def _embed_figure(figfile, figfmt):
     return '<img src="data:image/{};base64,{}" />'.format(figfmt, data_uri)
 
 
-# %% ../nbs/04_reports.ipynb 11
+# %% ../nbs/04_reports.ipynb 12
 def _calc_dd(df, display=True, as_pct=False):
     dd = _stats.to_drawdown_series(df)
     dd_info = _stats.drawdown_details(dd)
@@ -141,7 +141,7 @@ def _calc_dd(df, display=True, as_pct=False):
 
     return dd_stats.T
 
-# %% ../nbs/04_reports.ipynb 12
+# %% ../nbs/04_reports.ipynb 13
 def metrics(returns, benchmark=None, rf=0., display=True,
             mode='basic', sep=False, compounded=True,
             periods_per_year=252, prepare_returns=True,
@@ -437,7 +437,7 @@ def metrics(returns, benchmark=None, rf=0., display=True,
     return metrics
 
 
-# %% ../nbs/04_reports.ipynb 14
+# %% ../nbs/04_reports.ipynb 15
 def plots(returns, benchmark=None, grayscale=False,
           figsize=(8, 5), mode='basic', compounded=True,
           periods_per_year=252, prepare_returns=True, match_dates=False
@@ -562,7 +562,7 @@ def plots(returns, benchmark=None, grayscale=False,
                         show=True, ylabel=False,
                         prepare_returns=False)
 
-# %% ../nbs/04_reports.ipynb 16
+# %% ../nbs/04_reports.ipynb 17
 def html(returns, benchmark=None, rf=0., grayscale=False,
          title='Strategy Tearsheet', output=None, compounded=True,
          periods_per_year=252, download_filename='quantstats-tearsheet.html',
@@ -834,7 +834,7 @@ def html(returns, benchmark=None, rf=0., grayscale=False,
     with open(download_filename, 'w', encoding='utf-8') as f:
         f.write(tpl)
 
-# %% ../nbs/04_reports.ipynb 18
+# %% ../nbs/04_reports.ipynb 19
 def full(returns, benchmark=None, rf=0., grayscale=False,
          figsize=(8, 5), display=True, compounded=True,
          periods_per_year=252, match_dates=False, **kwargs):
@@ -923,7 +923,7 @@ def full(returns, benchmark=None, rf=0., grayscale=False,
           grayscale=grayscale, figsize=figsize, mode='full',
           periods_per_year=periods_per_year, prepare_returns=False)
 
-# %% ../nbs/04_reports.ipynb 20
+# %% ../nbs/04_reports.ipynb 21
 def basic(returns, benchmark=None, rf=0., grayscale=False,
           figsize=(8, 5), display=True, compounded=True,
           periods_per_year=252, match_dates=False, **kwargs):

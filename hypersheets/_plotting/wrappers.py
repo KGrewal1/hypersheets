@@ -24,7 +24,7 @@ from .. import (
 from hypersheets._plotting import (
     core as _core)
 
-# %% ../../nbs/03_plot_wrappers.ipynb 4
+# %% ../../nbs/03_plot_wrappers.ipynb 5
 #| echo: false
 # Define global color variables
 
@@ -40,7 +40,7 @@ try:
 except ImportError:
     pass
 
-# %% ../../nbs/03_plot_wrappers.ipynb 5
+# %% ../../nbs/03_plot_wrappers.ipynb 6
 def to_plotly(fig):
     if not _HAS_PLOTLY:
         return fig
@@ -50,7 +50,7 @@ def to_plotly(fig):
         return plotly.plotly.iplot(fig, filename='quantstats-plot',
                                    overwrite=True)
 
-# %% ../../nbs/03_plot_wrappers.ipynb 6
+# %% ../../nbs/03_plot_wrappers.ipynb 7
 def snapshot(returns, grayscale=False, figsize=(10, 8),
              title='Portfolio Summary', fontname='Arial', lw=1.5,
              mode="comp", subtitle=True, savefig=None, show=True,
@@ -165,7 +165,7 @@ def snapshot(returns, grayscale=False, figsize=(10, 8),
 
     return None
 
-# %% ../../nbs/03_plot_wrappers.ipynb 10
+# %% ../../nbs/03_plot_wrappers.ipynb 11
 def returns(returns, benchmark=None,
             grayscale=False, figsize=(10, 6),
             returns_label="Strategy", benchmark_label="Benchmark",
@@ -207,7 +207,7 @@ def returns(returns, benchmark=None,
     if not show:
         return fig
 
-# %% ../../nbs/03_plot_wrappers.ipynb 12
+# %% ../../nbs/03_plot_wrappers.ipynb 13
 def log_returns(returns, benchmark=None,
                 grayscale=False, figsize=(10, 5),
                 returns_label="Strategy", benchmark_label="Benchmark",
@@ -278,7 +278,7 @@ def daily_returns(returns,
     if not show:
         return fig
 
-# %% ../../nbs/03_plot_wrappers.ipynb 14
+# %% ../../nbs/03_plot_wrappers.ipynb 15
 def yearly_returns(returns, benchmark=None,
                    returns_label="Strategy", benchmark_label="Benchmark",
                    fontname='Arial', grayscale=False,
@@ -324,7 +324,7 @@ def yearly_returns(returns, benchmark=None,
     if not show:
         return fig
 
-# %% ../../nbs/03_plot_wrappers.ipynb 16
+# %% ../../nbs/03_plot_wrappers.ipynb 17
 def distribution(returns, fontname='Arial', grayscale=False, ylabel=True,
                  figsize=(10, 6), subtitle=True, compounded=True,
                  savefig=None, show=True,
@@ -343,7 +343,7 @@ def distribution(returns, fontname='Arial', grayscale=False, ylabel=True,
     if not show:
         return fig
 
-# %% ../../nbs/03_plot_wrappers.ipynb 18
+# %% ../../nbs/03_plot_wrappers.ipynb 19
 def histogram(returns, resample='M', fontname='Arial',
               grayscale=False, figsize=(10, 5), ylabel=True,
               subtitle=True, compounded=True, savefig=None, show=True,
@@ -374,7 +374,7 @@ def histogram(returns, resample='M', fontname='Arial',
                                 compounded=compounded,
                                 savefig=savefig, show=show)
 
-# %% ../../nbs/03_plot_wrappers.ipynb 20
+# %% ../../nbs/03_plot_wrappers.ipynb 21
 def drawdown(returns, grayscale=False, figsize=(10, 3),
              fontname='Arial', lw=1, log_scale=False,
              match_volatility=False, compound=False, ylabel="Drawdown",
@@ -395,7 +395,7 @@ def drawdown(returns, grayscale=False, figsize=(10, 3),
     if not show:
         return fig
 
-# %% ../../nbs/03_plot_wrappers.ipynb 22
+# %% ../../nbs/03_plot_wrappers.ipynb 23
 def drawdowns_periods(returns, periods=5, lw=1.5, log_scale=False,
                       fontname='Arial', grayscale=False, figsize=(10, 5),
                       ylabel=True, subtitle=True, compounded=True,
@@ -418,7 +418,7 @@ def drawdowns_periods(returns, periods=5, lw=1.5, log_scale=False,
     if not show:
         return fig
 
-# %% ../../nbs/03_plot_wrappers.ipynb 24
+# %% ../../nbs/03_plot_wrappers.ipynb 25
 def rolling_beta(returns, benchmark,
                  benchmark_label="Benchmark",
                  window1=126, window1_label="6-Months",
@@ -447,7 +447,7 @@ def rolling_beta(returns, benchmark,
     if not show:
         return fig
 
-# %% ../../nbs/03_plot_wrappers.ipynb 26
+# %% ../../nbs/03_plot_wrappers.ipynb 27
 def rolling_volatility(returns, benchmark=None,
                        returns_label="Strategy", benchmark_label="Benchmark",
                        period=126, period_label="6-Months",
@@ -480,7 +480,7 @@ def rolling_volatility(returns, benchmark=None,
         return fig
 
 
-# %% ../../nbs/03_plot_wrappers.ipynb 28
+# %% ../../nbs/03_plot_wrappers.ipynb 29
 def rolling_sharpe(returns, benchmark=None, rf=0.,
                    returns_label="Strategy", benchmark_label="Benchmark",
                    period=126, period_label="6-Months",
@@ -514,7 +514,7 @@ def rolling_sharpe(returns, benchmark=None, rf=0.,
     if not show:
         return fig
 
-# %% ../../nbs/03_plot_wrappers.ipynb 30
+# %% ../../nbs/03_plot_wrappers.ipynb 31
 def rolling_sortino(returns, benchmark=None, rf=0.,
                     returns_label="Strategy", benchmark_label="Benchmark",
                     period=126, period_label="6-Months",
@@ -548,7 +548,7 @@ def rolling_sortino(returns, benchmark=None, rf=0.,
     if not show:
         return fig
 
-# %% ../../nbs/03_plot_wrappers.ipynb 32
+# %% ../../nbs/03_plot_wrappers.ipynb 33
 def monthly_heatmap(returns, annot_size=10, figsize=(10, 5),
                     cbar=True, square=False,
                     compounded=True, eoy=False,
@@ -636,7 +636,7 @@ def monthly_heatmap(returns, annot_size=10, figsize=(10, 5),
 
     return None
 
-# %% ../../nbs/03_plot_wrappers.ipynb 34
+# %% ../../nbs/03_plot_wrappers.ipynb 35
 def outperformance_heatmap(returns, benchmark=None, annot_size=10, figsize=(10, 5),
                     cbar=True, square=False, benchmark_label="Benchmark",
                     compounded=True, eoy=False,
@@ -732,7 +732,7 @@ def outperformance_heatmap(returns, benchmark=None, annot_size=10, figsize=(10, 
 
     return None
 
-# %% ../../nbs/03_plot_wrappers.ipynb 36
+# %% ../../nbs/03_plot_wrappers.ipynb 37
 def monthly_returns(returns, annot_size=10, figsize=(10, 5),
                     cbar=True, square=False,
                     compounded=True, eoy=False,

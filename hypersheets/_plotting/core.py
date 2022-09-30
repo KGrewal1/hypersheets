@@ -23,7 +23,7 @@ import seaborn as sns
 from .. import (
     stats as _stats, utils as _utils)
 
-# %% ../../nbs/02_core_plots.ipynb 4
+# %% ../../nbs/02_core_plots.ipynb 5
 #| echo: false
 # Define global color variables
 sns.set(font_scale=1.1, rc={
@@ -42,7 +42,7 @@ FLATUI_COLORS = ["#696969", "#348dc1", "#af4b64",#fedd78->#696969 #348dc1->#0000
                   "#4fa487", "#9b59b6", "#808080"]
 GRAYSCALE_COLORS = ['silver', '#222222', 'gray'] * 3
 
-# %% ../../nbs/02_core_plots.ipynb 5
+# %% ../../nbs/02_core_plots.ipynb 6
 def _get_colors(grayscale):
     """Utility function to get colors"""
     colors = FLATUI_COLORS
@@ -88,7 +88,7 @@ def format_pct_axis(x, _):
     res = '%1.0f%%' % x
     return res.replace('.0%', '%')
 
-# %% ../../nbs/02_core_plots.ipynb 6
+# %% ../../nbs/02_core_plots.ipynb 7
 def plot_returns_bars(returns, benchmark=None,
                       returns_label="Strategy", benchmark_label="Benchmark",
                       hline=None, hlw=None, hlcolor="red", hllabel="",
@@ -204,7 +204,7 @@ def plot_returns_bars(returns, benchmark=None,
 
     return None
 
-# %% ../../nbs/02_core_plots.ipynb 8
+# %% ../../nbs/02_core_plots.ipynb 9
 def plot_timeseries(returns, benchmark=None,
                     title="Returns", compound=False, cumulative=True,
                     fill=False, returns_label="Strategy", benchmark_label="Benchmark",
@@ -333,7 +333,7 @@ def plot_timeseries(returns, benchmark=None,
 
     return None
 
-# %% ../../nbs/02_core_plots.ipynb 10
+# %% ../../nbs/02_core_plots.ipynb 11
 def plot_histogram(returns, resample="M", bins=20,
                    fontname='Arial', grayscale=False,
                    title="Returns", kde=True, figsize=(10, 6),
@@ -419,7 +419,7 @@ def plot_histogram(returns, resample="M", bins=20,
 
     return None
 
-# %% ../../nbs/02_core_plots.ipynb 12
+# %% ../../nbs/02_core_plots.ipynb 13
 def plot_rolling_stats(returns, benchmark=None, title="",
                        returns_label="Strategy", benchmark_label="Benchmark",
                        hline=None, hlw=None, hlcolor="red", hllabel="",
@@ -501,7 +501,7 @@ def plot_rolling_stats(returns, benchmark=None, title="",
 
     return None
 
-# %% ../../nbs/02_core_plots.ipynb 14
+# %% ../../nbs/02_core_plots.ipynb 15
 def plot_rolling_beta(returns, benchmark,
                       window1=126, window1_label="",
                       window2=None, window2_label="",
@@ -580,7 +580,7 @@ def plot_rolling_beta(returns, benchmark,
 
     return None
 
-# %% ../../nbs/02_core_plots.ipynb 16
+# %% ../../nbs/02_core_plots.ipynb 17
 def plot_longest_drawdowns(returns, periods=5, lw=1.5,
                            fontname='Arial', grayscale=False,
                            log_scale=False, figsize=(10, 6), ylabel=True,
@@ -666,7 +666,7 @@ def plot_longest_drawdowns(returns, periods=5, lw=1.5,
 
     return None
 
-# %% ../../nbs/02_core_plots.ipynb 18
+# %% ../../nbs/02_core_plots.ipynb 19
 def plot_distribution(returns, figsize=(10, 6),
                       fontname='Arial', grayscale=False, ylabel=True,
                       subtitle=True, compounded=True,
@@ -754,7 +754,7 @@ def plot_distribution(returns, figsize=(10, 6),
 
     return None
 
-# %% ../../nbs/02_core_plots.ipynb 20
+# %% ../../nbs/02_core_plots.ipynb 21
 def plot_table(tbl, columns=None, title="", title_loc="left",
                header=True,
                colWidths=None,
